@@ -56,7 +56,7 @@ function LoginPage() {
               <p className="text-muted text-center">
                 Vui lòng nhập thông tin để truy cập hệ thống.
               </p>
-
+              {error && <p className="error-message">{error}</p>}
               <form onSubmit={handleSubmit}>
                 <MDBInput
                   label="Địa chỉ Email"

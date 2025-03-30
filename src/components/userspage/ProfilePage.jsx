@@ -1,196 +1,93 @@
-import React, { useState, useEffect } from 'react';
-import UserService from '../service/UserService';
-import { Link } from 'react-router-dom';
-
-
+import React, { useState, useEffect } from "react";
+import UserService from "../service/UserService";
+import { Link } from "react-router-dom";
+import SidebarOfProfile from "../common/SideBarOfProfile";
+import {
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBCard,
+  MDBCardBody,
+  MDBTable,
+  MDBTableHead,
+  MDBTableBody,
+  MDBBtn,
+  MDBIcon,
+  MDBInputGroup,
+} from "mdb-react-ui-kit";
 
 function ProfilePage() {
-    const [profileInfo, setProfileInfo] = useState({});
+  const [profileInfo, setProfileInfo] = useState({});
 
-    useEffect(() => {
-        fetchProfileInfo();
-    }, []);
+  useEffect(() => {
+    fetchProfileInfo();
+  }, []);
 
-    const fetchProfileInfo = async () => {
-        try {
+  const fetchProfileInfo = async () => {
+    try {
+      const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+      const response = await UserService.getYourProfile(token);
+      setProfileInfo(response.ourUsers);
+    } catch (error) {
+      console.error("Error fetching profile information:", error);
+    }
+  };
 
-            const token = localStorage.getItem('token'); // Retrieve the token from localStorage
-            const response = await UserService.getYourProfile(token);
-            setProfileInfo(response.ourUsers);
-        } catch (error) {
-            console.error('Error fetching profile information:', error);
-        }
-    };
+  return (
+    <MDBContainer fluid className="p-0">
+      <MDBRow>
+        {/* Sidebar */}
+        <SidebarOfProfile />
 
-    return (
-		<section
-			className="shadow"
-			style={{ backgroundColor: "whitesmoke" }}>
-			<div className="container py-5">
-				<div className="row">
-					<div className="col-lg-3">
-						<div className="card mb-4">
-							<div className="card-body text-center">
-								<img
-									src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-									alt="avatar"
-									className="rounded-circle img-fluid"
-									style={{ width: 150 }}
-								/>
-								<h5 className="my-3">
-									{profileInfo.name}
-								</h5>
-								<div className="d-flex justify-content-center mb-2">
-									<button
-										type="button"
-										className="btn btn-outline-primary">
-										Call
-									</button>
-									<button
-										type="button"
-										className="btn btn-outline-warning ms-1">
-										Message
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div className="col-lg-9">
-						<div className="card mb-4">
-							<div className="card-body">
-								<hr />
-
-								<div className="row">
-									<div className="col-sm-3">
-										<h5 className="mb-0">
-											Name
-										</h5>
-									</div>
-
-									<div className="col-sm-9">
-										<p className="text-muted mb-0">
-											{profileInfo.name}
-										</p>
-									</div>
-								</div>
-
-								<hr />
-
-								<div className="row">
-									<div className="col-sm-3">
-										<h5 className="mb-0">
-											Email
-										</h5>
-									</div>
-
-									<div className="col-sm-9">
-										<p className="text-muted mb-0">
-											{profileInfo.email}
-										</p>
-									</div>
-								</div>
-								<hr />
-
-								<div className="row">
-									<div className="col-sm-3">
-										<h5 className="mb-0">
-											City
-										</h5>
-									</div>
-
-									<div className="col-sm-9">
-										<p className="text-muted mb-0">
-											{profileInfo.city}
-										</p>
-									</div>
-								</div>
-								<hr />
-
-								<div className="row">
-									<div className="col-sm-3">
-										<h5 className="mb-0">
-											Contract
-										</h5>
-									</div>
-
-									<div className="col-sm-9">
-										<p className="text-muted mb-0">
-											{profileInfo.contract}
-										</p>
-									</div>
-								</div>
-                                <hr/>
-								
-								<div className="row">
-									<div className="col-sm-3">
-										<h5 className="mb-0">
-											Phone Number
-										</h5>
-									</div>
-
-									<div className="col-sm-9">
-										<p className="text-muted mb-0">
-											{profileInfo.phone}
-										</p>
-									</div>
-								</div>
-                                <hr/>
-
-								<div className="row">
-									<div className="col-sm-3">
-										<h5 className="mb-0">
-											Address
-										</h5>
-									</div>
-
-									<div className="col-sm-9">
-										<p className="text-muted mb-0">
-											{profileInfo.address}
-										</p>
-									</div>
-								</div>
-                                <hr/>
-								
-								<div className="row">
-									<div className="col-sm-3">
-										<h5 className="mb-0">
-											Age
-										</h5>
-									</div>
-
-									<div className="col-sm-9">
-										<p className="text-muted mb-0">
-											{profileInfo.age}
-										</p>
-									</div>
-								</div>
-                                <hr/>
-								<div className="row">
-									<div className="col-sm-3">
-										<h5 className="mb-0">
-											Role
-										</h5>
-									</div>
-
-									<div className="col-sm-9">
-										<p className="text-muted mb-0">
-											{profileInfo.role}
-										</p>
-									</div>
-								</div>
-								
-                                <hr/>
-                                {profileInfo.role === "ADMIN" && (
-                                    <button><Link to={`/update-user/${profileInfo.id}`}>Update This Profile</Link></button>
-                                )}
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-    );
+        {/* Main Content */}
+        <MDBCol md="10" className="p-4 bg-light">
+          {/* Header */}
+          <main className="profile-content ms-100">
+            <h2>Xem hồ sơ</h2>
+            <div className="profile-card">
+              <h3>Thông Tin Cá Nhân</h3>
+              <p>
+                <strong>Họ Tên:</strong> {profileInfo.name}
+              </p>
+              <p>
+                <strong>Email:</strong> {profileInfo.email}
+              </p>
+              <p>
+                <strong>Vai trò:</strong> {profileInfo.role}
+              </p>
+              <p>
+                <strong>Thành Phố:</strong> {profileInfo.city}
+              </p>
+              <p>
+                <strong>Ngày bắt đầu hợp đồng:</strong> {profileInfo.contract}
+              </p>
+              <p>
+                <strong>Số điênh thoại:</strong> {profileInfo.phone}
+              </p>
+              <p>
+                <strong>Khoa giảng dạy:</strong> {profileInfo.department}
+              </p>
+              <p>
+                <strong>Địa chỉ:</strong> {profileInfo.address}
+              </p>
+              <p>
+                <strong>Ngày sinh:</strong> {profileInfo.dob}
+              </p>
+              <p>
+                <strong>Bằng cấp:</strong> {profileInfo.degree}
+              </p>
+            </div>
+            <Link
+              to={`/update-profile/${profileInfo.id}`}
+              className="btn btn-primary"
+            >
+              Cập Nhật Thông Tin
+            </Link>
+          </main>
+        </MDBCol>
+      </MDBRow>
+    </MDBContainer>
+  );
 }
 
 export default ProfilePage;

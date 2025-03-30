@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import UserService from "../service/UserService";
 import { Link } from "react-router-dom";
 
-function UpdateUser() {
+function UpdateProfile() {
   const navigate = useNavigate();
   const { userId } = useParams();
 
@@ -76,7 +76,7 @@ function UpdateUser() {
         const res = await UserService.updateUser(userId, userData, token);
         console.log(res);
         // Redirect to profile page or display a success message
-        navigate("/admin/user-management"); //here
+        navigate("/profile"); //here
       }
     } catch (error) {
       console.error("Error updating user profile:", error);
@@ -86,7 +86,7 @@ function UpdateUser() {
 
   return (
     <div className="col-sm-8 py-2 px-5 offset-2 shadow">
-      <h2 className="mt-5"> Edit Teacher</h2>
+      <h2 className="mt-5"> Edit Profile</h2>
       <form onSubmit={handleSubmit}>
         <div className="input-group mb-5">
           <label className="input-group-text" htmlFor="name">
@@ -96,7 +96,7 @@ function UpdateUser() {
             className="form-control col-sm-6"
             type="text"
             name="name"
-            id="name"
+            id="firstName"
             required
             value={userData.name}
             onChange={handleInputChange}
@@ -246,7 +246,7 @@ function UpdateUser() {
 
           <div className="col-sm-2">
             <Link
-              to={"/admin/user-management"}
+              to={"/profile"}
               type="submit"
               className="btn btn-outline-warning btn-lg"
             >
@@ -259,4 +259,4 @@ function UpdateUser() {
   );
 }
 
-export default UpdateUser;
+export default UpdateProfile;
