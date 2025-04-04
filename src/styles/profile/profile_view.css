@@ -1,0 +1,19 @@
+/* ====== CSS Xem Hồ Sơ ====== */
+.profile-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.profile-card h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.profile-card p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+}

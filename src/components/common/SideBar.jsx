@@ -51,12 +51,17 @@ function SideBar() {
         </li>
         <li className="p-2">
           <Link to="/business-trip" className="text-white text-decoration-none">
-            Chuyến công tác
+            Hợp đồng
           </Link>
         </li>
         <li className="p-2">
           <Link to="/reports" className="text-white text-decoration-none">
-            Báo cáo
+            Nghỉ phép
+          </Link>
+        </li>
+        <li className="p-2">
+          <Link to="/reports" className="text-white text-decoration-none">
+            Điểm danh
           </Link>
         </li>
       </ul>

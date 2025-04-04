@@ -1,0 +1,24 @@
+/* src/styles/Topbar.css */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f8f9fa;
+  padding: 15px;
+}
+
+.topbar h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

@@ -16,10 +16,38 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    return password.length >= 6;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setEmailError("");
+    setPasswordError("");
+
+    let isValid = true;
+
+    if (!validateEmail(email)) {
+      setEmailError("Email không hợp lệ.");
+      isValid = false;
+    }
+
+    if (!validatePassword(password)) {
+      setPasswordError("Mật khẩu phải có ít nhất 6 ký tự.");
+      isValid = false;
+    }
+
+    if (!isValid) return;
 
     try {
       const userData = await UserService.login(email, password);
@@ -66,6 +94,7 @@ function LoginPage() {
                   required
                   className="mb-3"
                 />
+                {emailError && <p className="text-danger">{emailError}</p>}
                 <MDBInput
                   label="Mật khẩu"
                   type="password"
@@ -74,6 +103,9 @@ function LoginPage() {
                   required
                   className="mb-3"
                 />
+                {passwordError && (
+                  <p className="text-danger">{passwordError}</p>
+                )}
 
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <MDBCheckbox label="Ghi nhớ đăng nhập" />

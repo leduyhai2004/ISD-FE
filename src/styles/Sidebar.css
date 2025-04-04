@@ -1,0 +1,101 @@
+/* Sidebar tổng quát */
+.sidebar {
+  width: 250px;
+  background-color: #0c1b4d;
+  color: white;
+  height: 100vh;
+  padding-top: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Menu tổng quát */
+.menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item {
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.menu-item i {
+  margin-right: 10px;
+}
+
+/* Màu vàng khi active */
+.menu-item.active {
+  background-color: #ffc107;
+  color: black;
+}
+
+/* Dropdown Hồ sơ */
+.menu-item.has-dropdown {
+  position: relative;
+}
+
+/* Phần Header Dropdown */
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-icon {
+  margin-left: auto;
+  font-size: 12px;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+  background-color: #0c1b4d;
+}
+
+/* Submenu của Hồ sơ */
+.submenu-item {
+  padding: 8px 20px;
+  cursor: pointer;
+  background-color: #0c1b4d;
+  color: white;
+  font-size: 14px;
+  border-left: 5px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.submenu-item:hover {
+  background-color: #ffc107;
+  color: black;
+  border-left: 5px solid #ffc107;
+}
+
+/* Mục con active */
+.submenu-item.active-submenu {
+  background-color: #ffc107;
+  color: black;
+  border-left: 5px solid #ffc107;
+}
+
+/* Đăng xuất */
+.menu-item.logout {
+  background-color: #ff4d4f;
+  color: white;
+  text-align: center;
+}
+
+.menu-item.logout:hover {
+  background-color: #ff7875;
+}
+
+/* Điều chỉnh khoảng cách giữa các mục */
+.menu-item,
+.submenu-item {
+  margin-bottom: 5px;
+}

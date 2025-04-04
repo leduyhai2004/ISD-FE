@@ -10,6 +10,7 @@ import UpdateUser from "./components/userspage/UpdateUser";
 import UserManagementPage from "./components/userspage/UserManagementPage";
 import ProfilePage from "./components/userspage/ProfilePage";
 import UpdateProfile from "./components/userspage/UpdateProfile";
+import Dashboard from "./components/userspage/Dashboard";
 
 function App() {
   return (
@@ -19,8 +20,31 @@ function App() {
         <div className="content">
           <Routes>
             <Route exact path="/" element={<LoginPage />} />
-            <Route exact path="/login" element={<LoginPage />} />
+            {/* <Route exact path="/login" element={<LoginPage />} /> */}
+            <Route
+              exact
+              path="/"
+              element={
+                UserService.isAuthenticated() ? (
+                  <Navigate to="/dashboard" />
+                ) : (
+                  <LoginPage />
+                )
+              }
+            />
+            <Route
+              exact
+              path="/login"
+              element={
+                UserService.isAuthenticated() ? (
+                  <Navigate to="/dashboard" />
+                ) : (
+                  <LoginPage />
+                )
+              }
+            />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             {/* Check if user is authenticated and admin before rendering admin-only routes */}
             {UserService.adminOnly() && (
               <>
