@@ -1,0 +1,146 @@
+/* Sidebar tổng quát */
+.sidebar {
+  width: 250px;
+  background-color: #0c1b4d;
+  color: white;
+  height: 100vh;
+  padding-top: 20px;
+  font-family: Arial, sans-serif;
+  overflow-y: auto;
+}
+
+/* Header với avatar */
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 0 15px;
+}
+
+.avatar-container {
+  margin-bottom: 10px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffc107;
+}
+
+.teacher-name {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.teacher-role {
+  font-size: 14px;
+  color: #ccc;
+  margin-top: 0;
+}
+
+/* Menu tổng quát */
+.menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-item {
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.menu-item i {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+/* Màu vàng khi active */
+.menu-item.active {
+  background-color: #ffc107;
+  color: black;
+  font-weight: 500;
+}
+
+.menu-item:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Dropdown Hồ sơ */
+.menu-item.has-dropdown {
+  padding: 0;
+  flex-direction: column;
+}
+
+/* Phần Header Dropdown */
+.sidebar-dropdown-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.dropdown-icon {
+  margin-left: auto;
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.menu-item.expanded .dropdown-icon {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.sidebar-dropdown-menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.sidebar-dropdown-menu.show {
+  max-height: 200px; /* Adjust based on your needs */
+}
+
+/* Submenu của Hồ sơ */
+.submenu-item {
+  padding: 10px 20px 10px 50px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+.submenu-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Mục con active */
+.submenu-item.active-submenu {
+  background-color: rgba(255, 193, 7, 0.3);
+  color: #ffc107;
+  font-weight: 500;
+}
+
+/* Đăng xuất */
+.menu-item.logout {
+  margin-top: 20px;
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.menu-item.logout:hover {
+  background-color: #ff7875;
+}
