@@ -10,6 +10,18 @@ import LeaveRequest from "./pages/LeaveRequest"
 import CheckInOut from "./pages/CheckInOut"
 import AttendanceHistory from "./pages/AttendanceHistory"
 
+// Admin routes
+import AdminDashboard from "./pages/admin/AdminDashboard"
+import TeacherManagement from "./pages/admin/TeacherManagement"
+import LeaveManagement from "./pages/admin/LeaveManagement"
+import AttendanceManagement from "./pages/admin/AttendanceManagement"
+import NotificationManagement from "./pages/admin/NotificationManagement"
+import TransferManagement from "./pages/admin/TransferManagement"
+import ChatManagement from "./pages/admin/ChatManagement"
+import AccountManagement from "./pages/admin/AccountManagement"
+import ContractManagement from "./pages/admin/ContractManagement"
+import ReportManagement from "./pages/admin/ReportManagement"
+
 function App() {
   return (
     <Router>
@@ -17,28 +29,28 @@ function App() {
         {/* Trang đăng nhập */}
         <Route path="/" element={<Login />} />
 
-        {/* Trang chính */}
+        {/* Trang giáo viên */}
         <Route path="/dashboard" element={<Dashboard />} />
-
-        {/* Hồ sơ */}
         <Route path="/profile/view" element={<ProfileView />} />
         <Route path="/profile/edit" element={<ProfileEdit />} />
-
-        {/* Thông báo */}
         <Route path="/notifications" element={<Notifications />} />
-
-        {/* Tin nhắn */}
         <Route path="/messages" element={<Messages />} />
-
-        {/* Hợp đồng */}
         <Route path="/contract" element={<Contract />} />
-
-        {/* Nghỉ phép */}
         <Route path="/leave" element={<LeaveRequest />} />
-
-        {/* Điểm danh */}
         <Route path="/attendance" element={<CheckInOut />} />
         <Route path="/attendance/history" element={<AttendanceHistory />} />
+
+        {/* Trang admin */}
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/teachers" element={<TeacherManagement />} />
+        <Route path="/admin/leave" element={<LeaveManagement />} />
+        <Route path="/admin/attendance" element={<AttendanceManagement />} />
+        <Route path="/admin/notifications" element={<NotificationManagement />} />
+        <Route path="/admin/transfer" element={<TransferManagement />} />
+        <Route path="/admin/chat" element={<ChatManagement />} />
+        <Route path="/admin/accounts" element={<AccountManagement />} />
+        <Route path="/admin/contracts" element={<ContractManagement />} />
+        <Route path="/admin/reports" element={<ReportManagement />} />
       </Routes>
     </Router>
   )

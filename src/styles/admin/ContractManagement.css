@@ -1,0 +1,108 @@
+/* src/styles/admin/ContractManagement.css */
+.contract-management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .contract-management-header h3 {
+    font-size: 20px;
+    color: #333;
+    margin: 0;
+  }
+  
+  .contract-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .contract-actions select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    font-size: 14px;
+  }
+  
+  .add-contract-btn {
+    padding: 8px 16px;
+    background-color: #1890ff;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .add-contract-btn:hover {
+    background-color: #40a9ff;
+  }
+  
+  .contract-table {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+  }
+  
+  .contract-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .contract-table th,
+  .contract-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .contract-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .contract-table tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .contract-table .no-data {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+  }
+  
+  .status-badge.active {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .status-badge.expired {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  .btn-edit {
+    padding: 6px 12px;
+    background-color: #52c41a;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .btn-edit:hover {
+    background-color: #73d13d;
+  }
+  

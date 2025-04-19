@@ -1,0 +1,110 @@
+/* src/styles/admin/FormModal.css */
+.form-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .form-modal {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 500px;
+    max-width: 90%;
+    max-height: 90vh;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .form-modal-header h3 {
+    font-size: 18px;
+    margin: 0;
+    color: #333;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #999;
+  }
+  
+  .close-button:hover {
+    color: #333;
+  }
+  
+  .form-modal-content {
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: #1890ff;
+  }
+  
+  .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .btn-submit {
+    padding: 8px 16px;
+    background-color: #1890ff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+  }
+  
+  .btn-submit:hover {
+    background-color: #40a9ff;
+  }
+  

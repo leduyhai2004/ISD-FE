@@ -1,0 +1,106 @@
+/* src/styles/admin/AccountManagement.css */
+.account-management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .account-management-header h3 {
+    font-size: 20px;
+    color: #333;
+    margin: 0;
+  }
+  
+  .add-account-btn {
+    padding: 8px 16px;
+    background-color: #1890ff;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .add-account-btn:hover {
+    background-color: #40a9ff;
+  }
+  
+  .account-table {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+  }
+  
+  .account-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .account-table th,
+  .account-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .account-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .account-table tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .account-table .no-data {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+  }
+  
+  .account-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .btn-reset {
+    padding: 6px 12px;
+    background-color: #faad14;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .btn-reset:hover {
+    background-color: #ffc53d;
+  }
+  
+  .btn-delete {
+    padding: 6px 12px;
+    background-color: #f5222d;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .btn-delete:hover {
+    background-color: #ff4d4f;
+  }
+  

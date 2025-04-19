@@ -1,0 +1,59 @@
+/* src/styles/admin/StatsCard.css */
+.admin-stats-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stats-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #fff;
+  }
+  
+  .admin-stats-card.blue .stats-icon {
+    background-color: #1890ff;
+  }
+  
+  .admin-stats-card.green .stats-icon {
+    background-color: #52c41a;
+  }
+  
+  .admin-stats-card.orange .stats-icon {
+    background-color: #faad14;
+  }
+  
+  .admin-stats-card.red .stats-icon {
+    background-color: #f5222d;
+  }
+  
+  .admin-stats-card.purple .stats-icon {
+    background-color: #722ed1;
+  }
+  
+  .stats-info {
+    flex: 1;
+  }
+  
+  .stats-info h3 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+    color: #333;
+  }
+  
+  .stats-info p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+  }
+  

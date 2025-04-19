@@ -1,0 +1,132 @@
+/* src/styles/admin/TeacherManagement.css */
+.teacher-management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .teacher-management-header h3 {
+    font-size: 20px;
+    color: #333;
+    margin: 0;
+  }
+  
+  .add-teacher-btn {
+    padding: 8px 16px;
+    background-color: #1890ff;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .add-teacher-btn:hover {
+    background-color: #40a9ff;
+  }
+  
+  .teacher-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .teacher-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .status-badge.active {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .status-badge.inactive {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: #1890ff;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .btn-cancel {
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .btn-submit {
+    padding: 8px 16px;
+    background-color: #1890ff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .btn-submit:hover {
+    background-color: #40a9ff;
+  }
+  
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    font-size: 16px;
+    color: #666;
+  }
+  

@@ -1,0 +1,89 @@
+/* src/styles/admin/NotificationManagement.css */
+.notification-management {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .notification-form-container,
+  .notification-list-container {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .notification-form-container h3,
+  .notification-list-container h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .notification-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .notification-table th,
+  .notification-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .notification-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .notification-table tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .notification-table .no-data {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+  }
+  
+  .notification-content-cell {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .btn-send {
+    padding: 8px 16px;
+    background-color: #1890ff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+  }
+  
+  .btn-send:hover {
+    background-color: #40a9ff;
+  }
+  
+  .btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #f5222d;
+    font-size: 16px;
+  }
+  
+  .btn-delete:hover {
+    color: #ff4d4f;
+  }
+  
+  @media (max-width: 992px) {
+    .notification-management {
+      grid-template-columns: 1fr;
+    }
+  }
+  

@@ -1,0 +1,77 @@
+/* src/styles/admin/EventsList.css */
+.events-list {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .events-list h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .events-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .events-list li {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .events-list li:last-child {
+    border-bottom: none;
+  }
+  
+  .event-date {
+    width: 50px;
+    height: 50px;
+    background-color: #1890ff;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    margin-right: 15px;
+    flex-shrink: 0;
+  }
+  
+  .event-day {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .event-month {
+    font-size: 12px;
+  }
+  
+  .event-details {
+    flex: 1;
+  }
+  
+  .event-details h4 {
+    font-size: 16px;
+    margin: 0 0 5px 0;
+    color: #333;
+  }
+  
+  .event-details p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .event-details i {
+    font-size: 12px;
+  }
+  

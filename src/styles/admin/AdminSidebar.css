@@ -1,0 +1,91 @@
+/* src/styles/admin/AdminSidebar.css */
+.admin-sidebar {
+    width: 250px;
+    background-color: #0c1b4d;
+    color: white;
+    height: 100vh;
+    padding-top: 20px;
+    font-family: Arial, sans-serif;
+    overflow-y: auto;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+  }
+  
+  .admin-sidebar-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 0 15px;
+  }
+  
+  .admin-avatar-container {
+    margin-bottom: 10px;
+  }
+  
+  .admin-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ffc107;
+  }
+  
+  .admin-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  .admin-role {
+    font-size: 14px;
+    color: #ccc;
+    margin-top: 0;
+  }
+  
+  /* Menu tổng quát */
+  .admin-menu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .admin-menu-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+    margin-bottom: 5px;
+  }
+  
+  .admin-menu-item i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+  }
+  
+  /* Màu vàng khi active */
+  .admin-menu-item.active {
+    background-color: #ffc107;
+    color: black;
+    font-weight: 500;
+  }
+  
+  .admin-menu-item:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Đăng xuất */
+  .admin-menu-item.logout {
+    margin-top: 20px;
+    background-color: #ff4d4f;
+    color: white;
+  }
+  
+  .admin-menu-item.logout:hover {
+    background-color: #ff7875;
+  }
+  

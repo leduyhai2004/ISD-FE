@@ -1,24 +1,34 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/teacher_login.css';
+"use client"
+
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import "../styles/teacher_login.css"
+import { login } from "../api/auth" // Import the login function
 
 const Login = () => {
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
-  navigate('/dashboard'); // sau khi login
+  const [error, setError] = useState("")
+  const navigate = useNavigate()
+  //navigate("/dashboard") // sau khi login
 
   const handleLogin = (e) => {
-    e.preventDefault();
-    const email = e.target.email.value.trim();
-    const password = e.target.password.value.trim();
+    e.preventDefault()
+    const email = e.target.email.value.trim()
+    const password = e.target.password.value.trim()
 
-    // Tạm kiểm tra cứng – sẽ thay bằng API thật sau
-    if (email === 'teacher@example.com' && password === '123456') {
-      navigate('/dashboard');
-    } else {
-      setError('Thông tin đăng nhập không chính xác. Vui lòng thử lại.');
-    }
-  };
+    // Use the mock login function from the API
+    login(email, password)
+      .then((user) => {
+        // Check user role and navigate to appropriate dashboard
+        if (user.role === "admin") {
+          navigate("/admin")
+        } else {
+          navigate("/dashboard")
+        }
+      })
+      .catch((error) => {
+        setError("Thông tin đăng nhập không chính xác. Vui lòng thử lại.")
+      })
+  }
 
   return (
     <div className="login-container">
@@ -32,14 +42,7 @@ const Login = () => {
           <form onSubmit={handleLogin}>
             <div className="form-group">
               <label htmlFor="email">Địa chỉ Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                className="form-control"
-                placeholder="Nhập email"
-                required
-              />
+              <input type="email" id="email" name="email" className="form-control" placeholder="Nhập email" required />
             </div>
 
             <div className="form-group">
@@ -59,7 +62,7 @@ const Login = () => {
                 <input type="checkbox" />
                 Ghi nhớ đăng nhập
               </label>
-              <a href="#" onClick={() => alert('Liên hệ Admin')}>
+              <a href="#" onClick={() => alert("Liên hệ Admin")}>
                 Quên mật khẩu?
               </a>
             </div>
@@ -71,7 +74,7 @@ const Login = () => {
 
           <div className="text-center">
             <span>Chưa có tài khoản? </span>
-            <a href="#" onClick={() => alert('Liên hệ quản trị viên')}>
+            <a href="#" onClick={() => alert("Liên hệ quản trị viên")}>
               Đăng ký ngay
             </a>
           </div>
@@ -79,9 +82,8 @@ const Login = () => {
       </div>
 
       <div className="login-right"></div>
-
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

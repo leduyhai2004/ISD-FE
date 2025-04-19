@@ -1,0 +1,49 @@
+/* src/styles/admin/ActivityList.css */
+.activity-list {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .activity-list h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .activity-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .activity-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .activity-list li:last-child {
+    border-bottom: none;
+  }
+  
+  .activity-content {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .activity-content strong {
+    color: #1890ff;
+  }
+  
+  .activity-time {
+    font-size: 12px;
+    color: #999;
+    white-space: nowrap;
+    margin-left: 10px;
+  }
+  
