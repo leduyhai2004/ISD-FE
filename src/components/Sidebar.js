@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
+import UserAvatar from "./UserAvatar"
 import "../styles/Sidebar.css"
 
 const Sidebar = () => {
@@ -39,7 +40,7 @@ const Sidebar = () => {
     <div className="sidebar">
       <div className="sidebar-header">
         <div className="avatar-container">
-          <img src="/placeholder.svg?height=80&width=80" alt="Avatar" className="avatar" />
+          <UserAvatar name="Nguyễn Văn A" size="lg" />
         </div>
         <p className="teacher-name">Nguyễn Văn A</p>
         <p className="teacher-role">Giáo Viên Toán</p>

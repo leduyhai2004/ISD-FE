@@ -1,82 +1,111 @@
 /* src/styles/admin/ContractManagement.css */
-.contract-management-header {
+.admin-content {
+    flex: 1;
+    margin-left: 250px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f5f7fb;
+  }
+  
+  .contract-management-container {
+    padding: 20px;
+    flex: 1;
+  }
+  
+  .contract-management-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
   }
   
-  .contract-management-header h3 {
-    font-size: 20px;
+  .contract-management-header h2 {
+    font-size: 22px;
     color: #333;
     margin: 0;
   }
   
-  .contract-actions {
-    display: flex;
-    gap: 10px;
-    align-items: center;
+  .contract-search {
+    position: relative;
   }
   
-  .contract-actions select {
-    padding: 8px 12px;
+  .contract-search input {
+    padding: 10px 15px;
+    padding-right: 40px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    outline: none;
     font-size: 14px;
+    width: 300px;
   }
   
-  .add-contract-btn {
-    padding: 8px 16px;
-    background-color: #1890ff;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    cursor: pointer;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  .contract-search i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
   }
   
-  .add-contract-btn:hover {
-    background-color: #40a9ff;
-  }
-  
-  .contract-table {
+  .expiring-contracts-section,
+  .contracts-list-section {
     background-color: #fff;
     border-radius: 8px;
     padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .expiring-contracts-section h3,
+  .contracts-list-section h3 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .no-contracts-message {
+    background-color: #fff8e1;
+    border-left: 4px solid #ffc107;
+    padding: 15px;
+    color: #856404;
+    border-radius: 4px;
+  }
+  
+  .expiring-contracts-table,
+  .contracts-table {
+    width: 100%;
     overflow-x: auto;
   }
   
-  .contract-table table {
+  table {
     width: 100%;
     border-collapse: collapse;
   }
   
-  .contract-table th,
-  .contract-table td {
-    padding: 12px;
+  th,
+  td {
+    padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #eee;
   }
   
-  .contract-table th {
+  th {
     background-color: #f8f9fa;
     font-weight: 600;
     color: #333;
   }
   
-  .contract-table tr:hover {
+  tr:hover {
     background-color: #f9f9f9;
   }
   
-  .contract-table .no-data {
-    text-align: center;
-    padding: 20px;
-    color: #999;
+  .status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
   }
   
   .status-badge.active {
@@ -89,20 +118,146 @@
     color: #721c24;
   }
   
-  .btn-edit {
-    padding: 6px 12px;
-    background-color: #52c41a;
+  .contract-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .btn-view,
+  .btn-edit,
+  .btn-delete {
+    width: 32px;
+    height: 32px;
     border: none;
     border-radius: 4px;
-    color: #fff;
-    cursor: pointer;
-    font-size: 14px;
     display: flex;
     align-items: center;
-    gap: 5px;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+  }
+  
+  .btn-view {
+    background-color: #17a2b8;
+  }
+  
+  .btn-edit {
+    background-color: #ffc107;
+  }
+  
+  .btn-delete {
+    background-color: #dc3545;
+  }
+  
+  .btn-view:hover {
+    background-color: #138496;
   }
   
   .btn-edit:hover {
-    background-color: #73d13d;
+    background-color: #e0a800;
+  }
+  
+  .btn-delete:hover {
+    background-color: #c82333;
+  }
+  
+  .add-contract-button-container {
+    margin-bottom: 20px;
+  }
+  
+  .add-contract-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .add-contract-btn:hover {
+    background-color: #0069d9;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .btn-cancel {
+    padding: 8px 16px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .btn-submit {
+    padding: 8px 16px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .btn-submit:hover {
+    background-color: #0069d9;
+  }
+  
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .no-data {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+  }
+  
+  .alert.success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border-left: 4px solid #28a745;
   }
   

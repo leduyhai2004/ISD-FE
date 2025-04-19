@@ -60,8 +60,15 @@
     color: #721c24;
   }
   
+  /* Teacher Form Styles */
+  .teacher-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
   .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 0;
   }
   
   .form-group label {
@@ -69,6 +76,7 @@
     font-size: 14px;
     margin-bottom: 5px;
     color: #333;
+    font-weight: 500;
   }
   
   .form-group input,
@@ -86,11 +94,24 @@
     border-color: #1890ff;
   }
   
+  .date-input-container {
+    position: relative;
+  }
+  
+  .date-input-container i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    pointer-events: none;
+  }
+  
   .form-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 10px;
   }
   
   .btn-cancel {
@@ -128,5 +149,15 @@
     height: 200px;
     font-size: 16px;
     color: #666;
+  }
+  
+  /* Success message */
+  .alert.success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    border-left: 4px solid #28a745;
   }
   

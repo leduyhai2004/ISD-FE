@@ -6,6 +6,7 @@ import AdminTopbar from "../../components/admin/AdminTopbar"
 import DataTable from "../../components/admin/DataTable"
 import FormModal from "../../components/admin/FormModal"
 import ConfirmModal from "../../components/admin/ConfirmModal"
+import UserAvatar from "../../components/UserAvatar"
 import { getTeachers, addTeacher, updateTeacher, deleteTeacher } from "../../api/mockTeachers"
 import "../../styles/admin/TeacherManagement.css"
 
@@ -16,12 +17,17 @@ const TeacherManagement = () => {
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [currentTeacher, setCurrentTeacher] = useState(null)
+  const [successMessage, setSuccessMessage] = useState("")
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    subject: "",
+    birthDate: "",
+    address: "",
+    emergencyContact: "",
     joinDate: "",
+    degree: "",
+    subject: "Toán", // Default subject
   })
 
   useEffect(() => {
@@ -56,6 +62,7 @@ const TeacherManagement = () => {
         setTeachers([...teachers, newTeacher])
         setShowAddModal(false)
         resetForm()
+        showSuccessMessage("Thêm giáo viên thành công!")
       })
       .catch((error) => {
         console.error("Error adding teacher:", error)
@@ -69,6 +76,7 @@ const TeacherManagement = () => {
         setTeachers(teachers.map((t) => (t.id === updatedTeacher.id ? updatedTeacher : t)))
         setShowEditModal(false)
         resetForm()
+        showSuccessMessage("Cập nhật thông tin giáo viên thành công!")
       })
       .catch((error) => {
         console.error("Error updating teacher:", error)
@@ -80,6 +88,7 @@ const TeacherManagement = () => {
       .then(() => {
         setTeachers(teachers.filter((t) => t.id !== currentTeacher.id))
         setShowDeleteModal(false)
+        showSuccessMessage("Xóa giáo viên thành công!")
       })
       .catch((error) => {
         console.error("Error deleting teacher:", error)
@@ -92,8 +101,12 @@ const TeacherManagement = () => {
       name: teacher.name,
       email: teacher.email,
       phone: teacher.phone,
-      subject: teacher.subject,
+      birthDate: teacher.birthDate || "",
+      address: teacher.address || "",
+      emergencyContact: teacher.emergencyContact || "",
       joinDate: teacher.joinDate,
+      degree: teacher.degree || "",
+      subject: teacher.subject,
     })
     setShowEditModal(true)
   }
@@ -108,10 +121,21 @@ const TeacherManagement = () => {
       name: "",
       email: "",
       phone: "",
-      subject: "",
+      birthDate: "",
+      address: "",
+      emergencyContact: "",
       joinDate: "",
+      degree: "",
+      subject: "Toán",
     })
     setCurrentTeacher(null)
+  }
+
+  const showSuccessMessage = (message) => {
+    setSuccessMessage(message)
+    setTimeout(() => {
+      setSuccessMessage("")
+    }, 3000)
   }
 
   const columns = [
@@ -121,7 +145,7 @@ const TeacherManagement = () => {
       sortable: true,
       render: (teacher) => (
         <div className="teacher-name-cell">
-          <img src={teacher.avatar || "/placeholder.svg"} alt={teacher.name} className="teacher-avatar" />
+          <UserAvatar name={teacher.name} size="sm" />
           <span>{teacher.name}</span>
         </div>
       ),
@@ -155,6 +179,8 @@ const TeacherManagement = () => {
             </button>
           </div>
 
+          {successMessage && <div className="alert success">{successMessage}</div>}
+
           {loading ? (
             <div className="loading">Đang tải dữ liệu...</div>
           ) : (
@@ -168,86 +194,203 @@ const TeacherManagement = () => {
           )}
 
           {/* Add Teacher Modal */}
-          <FormModal isOpen={showAddModal} title="Thêm giáo viên mới" onClose={() => setShowAddModal(false)}>
-            <form onSubmit={handleAddTeacher}>
+          <FormModal isOpen={showAddModal} title="Thêm Giáo Viên" onClose={() => setShowAddModal(false)}>
+            <form onSubmit={handleAddTeacher} className="teacher-form">
               <div className="form-group">
-                <label>Họ tên</label>
-                <input type="text" name="name" value={formData.name} onChange={handleInputChange} required />
-              </div>
-              <div className="form-group">
-                <label>Email</label>
-                <input type="email" name="email" value={formData.email} onChange={handleInputChange} required />
-              </div>
-              <div className="form-group">
-                <label>Số điện thoại</label>
-                <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} required />
-              </div>
-              <div className="form-group">
-                <label>Môn giảng dạy</label>
-                <input type="text" name="subject" value={formData.subject} onChange={handleInputChange} required />
-              </div>
-              <div className="form-group">
-                <label>Ngày vào làm</label>
+                <label>Họ và Tên *</label>
                 <input
                   type="text"
-                  name="joinDate"
-                  placeholder="DD/MM/YYYY"
-                  value={formData.joinDate}
+                  name="name"
+                  value={formData.name}
                   onChange={handleInputChange}
+                  placeholder="Nhập họ và tên"
                   required
                 />
               </div>
+
+              <div className="form-group">
+                <label>Ngày Sinh *</label>
+                <div className="date-input-container">
+                  <input
+                    type="date"
+                    name="birthDate"
+                    value={formData.birthDate}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <i className="fas fa-calendar"></i>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Số điện thoại *</label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="Nhập số điện thoại"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Email *</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Nhập email"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Địa chỉ *</label>
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  placeholder="Nhập địa chỉ"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Người liên hệ khẩn cấp *</label>
+                <input
+                  type="text"
+                  name="emergencyContact"
+                  value={formData.emergencyContact}
+                  onChange={handleInputChange}
+                  placeholder="Tên - Mối quan hệ - SĐT"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Ngày bắt đầu *</label>
+                <div className="date-input-container">
+                  <input type="date" name="joinDate" value={formData.joinDate} onChange={handleInputChange} required />
+                  <i className="fas fa-calendar"></i>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Bằng cấp</label>
+                <input
+                  type="text"
+                  name="degree"
+                  value={formData.degree}
+                  onChange={handleInputChange}
+                  placeholder="Nhập bằng cấp"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Môn giảng dạy *</label>
+                <select name="subject" value={formData.subject} onChange={handleInputChange} required>
+                  <option value="Toán">Toán</option>
+                  <option value="Văn">Văn</option>
+                  <option value="Anh">Anh</option>
+                  <option value="Lý">Lý</option>
+                  <option value="Hóa">Hóa</option>
+                  <option value="Sinh">Sinh</option>
+                </select>
+              </div>
+
               <div className="form-actions">
                 <button type="button" className="btn-cancel" onClick={() => setShowAddModal(false)}>
                   Hủy
                 </button>
                 <button type="submit" className="btn-submit">
-                  Thêm
+                  Lưu
                 </button>
               </div>
             </form>
           </FormModal>
 
           {/* Edit Teacher Modal */}
-          <FormModal
-            isOpen={showEditModal}
-            title="Chỉnh sửa thông tin giáo viên"
-            onClose={() => setShowEditModal(false)}
-          >
-            <form onSubmit={handleEditTeacher}>
+          <FormModal isOpen={showEditModal} title="Sửa Giáo Viên" onClose={() => setShowEditModal(false)}>
+            <form onSubmit={handleEditTeacher} className="teacher-form">
               <div className="form-group">
-                <label>Họ tên</label>
+                <label>Họ và Tên *</label>
                 <input type="text" name="name" value={formData.name} onChange={handleInputChange} required />
               </div>
+
               <div className="form-group">
-                <label>Email</label>
-                <input type="email" name="email" value={formData.email} onChange={handleInputChange} required />
+                <label>Ngày Sinh *</label>
+                <div className="date-input-container">
+                  <input
+                    type="date"
+                    name="birthDate"
+                    value={formData.birthDate}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <i className="fas fa-calendar"></i>
+                </div>
               </div>
+
               <div className="form-group">
-                <label>Số điện thoại</label>
+                <label>Số điện thoại *</label>
                 <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} required />
               </div>
+
               <div className="form-group">
-                <label>Môn giảng dạy</label>
-                <input type="text" name="subject" value={formData.subject} onChange={handleInputChange} required />
+                <label>Email *</label>
+                <input type="email" name="email" value={formData.email} onChange={handleInputChange} required />
               </div>
+
               <div className="form-group">
-                <label>Ngày vào làm</label>
+                <label>Địa chỉ *</label>
+                <input type="text" name="address" value={formData.address} onChange={handleInputChange} required />
+              </div>
+
+              <div className="form-group">
+                <label>Người liên hệ khẩn cấp *</label>
                 <input
                   type="text"
-                  name="joinDate"
-                  placeholder="DD/MM/YYYY"
-                  value={formData.joinDate}
+                  name="emergencyContact"
+                  value={formData.emergencyContact}
                   onChange={handleInputChange}
                   required
                 />
               </div>
+
+              <div className="form-group">
+                <label>Ngày bắt đầu *</label>
+                <div className="date-input-container">
+                  <input type="date" name="joinDate" value={formData.joinDate} onChange={handleInputChange} required />
+                  <i className="fas fa-calendar"></i>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Bằng cấp</label>
+                <input type="text" name="degree" value={formData.degree} onChange={handleInputChange} />
+              </div>
+
+              <div className="form-group">
+                <label>Môn giảng dạy *</label>
+                <select name="subject" value={formData.subject} onChange={handleInputChange} required>
+                  <option value="Toán">Toán</option>
+                  <option value="Văn">Văn</option>
+                  <option value="Anh">Anh</option>
+                  <option value="Lý">Lý</option>
+                  <option value="Hóa">Hóa</option>
+                  <option value="Sinh">Sinh</option>
+                </select>
+              </div>
+
               <div className="form-actions">
                 <button type="button" className="btn-cancel" onClick={() => setShowEditModal(false)}>
                   Hủy
                 </button>
                 <button type="submit" className="btn-submit">
-                  Cập nhật
+                  Lưu
                 </button>
               </div>
             </form>

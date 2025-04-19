@@ -11,6 +11,10 @@ const teachersData = [
       joinDate: "01/05/2020",
       status: "active",
       avatar: "/placeholder.svg?height=80&width=80",
+      birthDate: "01/01/1990",
+      address: "123 Đường ABC, Quận 1, TP.HCM",
+      emergencyContact: "Nguyễn Văn B - Cha - 0987-111-222",
+      degree: "Thạc sĩ Toán",
     },
     {
       id: 2,
@@ -21,6 +25,10 @@ const teachersData = [
       joinDate: "15/08/2019",
       status: "active",
       avatar: "/placeholder.svg?height=80&width=80",
+      birthDate: "15/05/1988",
+      address: "456 Đường XYZ, Quận 2, TP.HCM",
+      emergencyContact: "Trần Văn C - Chồng - 0912-345-678",
+      degree: "Thạc sĩ Văn học",
     },
     {
       id: 3,
@@ -31,6 +39,10 @@ const teachersData = [
       joinDate: "10/02/2021",
       status: "active",
       avatar: "/placeholder.svg?height=80&width=80",
+      birthDate: "20/11/1992",
+      address: "789 Đường DEF, Quận 3, TP.HCM",
+      emergencyContact: "Lê Thị D - Vợ - 0909-876-543",
+      degree: "Cử nhân Ngôn ngữ Anh",
     },
     {
       id: 4,
@@ -41,6 +53,10 @@ const teachersData = [
       joinDate: "05/09/2020",
       status: "inactive",
       avatar: "/placeholder.svg?height=80&width=80",
+      birthDate: "10/07/1985",
+      address: "101 Đường GHI, Quận 4, TP.HCM",
+      emergencyContact: "Phạm Văn E - Anh - 0918-765-432",
+      degree: "Tiến sĩ Vật lý",
     },
     {
       id: 5,
@@ -51,6 +67,10 @@ const teachersData = [
       joinDate: "20/11/2019",
       status: "active",
       avatar: "/placeholder.svg?height=80&width=80",
+      birthDate: "25/03/1991",
+      address: "202 Đường JKL, Quận 5, TP.HCM",
+      emergencyContact: "Hoàng Thị F - Mẹ - 0987-654-321",
+      degree: "Thạc sĩ Hóa học",
     },
   ]
   

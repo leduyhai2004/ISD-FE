@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import UserAvatar from "../UserAvatar"
 import "../../styles/admin/AdminTopbar.css"
 
 const AdminTopbar = ({ title = "Tổng quan" }) => {
@@ -59,7 +60,7 @@ const AdminTopbar = ({ title = "Tổng quan" }) => {
 
         <div className="admin-user-menu">
           <div className="user-avatar" onClick={() => setShowUserMenu(!showUserMenu)}>
-            <img src="/placeholder.svg?height=40&width=40" alt="User" />
+            <UserAvatar name="Admin" size="sm" />
           </div>
 
           {showUserMenu && (

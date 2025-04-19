@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { logout, getCurrentUser } from "../../api/mockAuth"
+import UserAvatar from "../UserAvatar"
 import "../../styles/admin/AdminSidebar.css"
 
 const AdminSidebar = () => {
@@ -18,7 +19,6 @@ const AdminSidebar = () => {
     }
   }, [])
 
-  // Set active menu based on current path
   useEffect(() => {
     const path = location.pathname
 
@@ -27,6 +27,8 @@ const AdminSidebar = () => {
     else if (path.includes("/admin/leave")) setActiveMenu("leave")
     else if (path.includes("/admin/attendance")) setActiveMenu("attendance")
     else if (path.includes("/admin/notifications")) setActiveMenu("notifications")
+    else if (path.includes("/admin/chat")) setActiveMenu("chat")
+    else if (path.includes("/admin/contracts")) setActiveMenu("contracts")
     else if (path.includes("/admin/settings")) setActiveMenu("settings")
   }, [location.pathname])
 
@@ -45,7 +47,7 @@ const AdminSidebar = () => {
     <div className="admin-sidebar">
       <div className="admin-sidebar-header">
         <div className="admin-avatar-container">
-          <img src={user?.avatar || "/placeholder.svg?height=80&width=80"} alt="Avatar" className="admin-avatar" />
+          <UserAvatar name={user?.name || "Admin"} size="lg" />
         </div>
         <p className="admin-name">{user?.name || "Admin"}</p>
         <p className="admin-role">{user?.position || "Quản trị viên"}</p>
@@ -90,6 +92,22 @@ const AdminSidebar = () => {
           className={`admin-menu-item ${activeMenu === "notifications" ? "active" : ""}`}
         >
           <i className="fas fa-bell"></i> Quản lý thông báo
+        </li>
+
+        {/* Tin nhắn */}
+        <li
+          onClick={() => handleNavigate("/admin/chat", "chat")}
+          className={`admin-menu-item ${activeMenu === "chat" ? "active" : ""}`}
+        >
+          <i className="fas fa-comments"></i> Tin nhắn
+        </li>
+
+        {/* Quản lý hợp đồng */}
+        <li
+          onClick={() => handleNavigate("/admin/contracts", "contracts")}
+          className={`admin-menu-item ${activeMenu === "contracts" ? "active" : ""}`}
+        >
+          <i className="fas fa-file-contract"></i> Quản lý hợp đồng
         </li>
 
         {/* Cài đặt hệ thống */}
