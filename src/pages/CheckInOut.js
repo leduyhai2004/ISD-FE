@@ -40,6 +40,10 @@ const CheckInOut = () => {
         setMessage("Bạn đã Check In thành công!")
         setMessageType("success")
 
+        // Create attendance record for today
+        const today = new Date().toLocaleDateString("vi-VN")
+        const checkInTimeFormatted = now.split(", ")[1] || "--"
+
         // Clear message after 3 seconds
         setTimeout(() => {
           setMessage("")

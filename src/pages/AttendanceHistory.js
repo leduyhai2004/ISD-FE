@@ -14,6 +14,10 @@ const AttendanceHistory = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    loadAttendanceHistory()
+  }, [])
+
+  const loadAttendanceHistory = () => {
     getHistory()
       .then((data) => {
         setRecords(data)
@@ -23,7 +27,7 @@ const AttendanceHistory = () => {
         setError("Error: Không thể lấy dữ liệu điểm danh. Vui lòng thử lại sau.")
         setLoading(false)
       })
-  }, [])
+  }
 
   const filtered = records.filter(
     (r) => r.date.includes(search) || r.status.toLowerCase().includes(search.toLowerCase()),
@@ -64,18 +68,26 @@ const AttendanceHistory = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {(search ? filtered : records).map((record) => (
-                        <tr key={record.id}>
-                          <td>{record.date}</td>
-                          <td>{record.checkIn || "--"}</td>
-                          <td>{record.checkOut || "--"}</td>
-                          <td>
-                            <span className={`status-badge ${record.status.toLowerCase().replace(/\s+/g, "-")}`}>
-                              {record.status}
-                            </span>
+                      {(search ? filtered : records).length > 0 ? (
+                        (search ? filtered : records).map((record) => (
+                          <tr key={record.id}>
+                            <td>{record.date}</td>
+                            <td>{record.checkIn || "--"}</td>
+                            <td>{record.checkOut || "--"}</td>
+                            <td>
+                              <span className={`status-badge ${record.status.toLowerCase().replace(/\s+/g, "-")}`}>
+                                {record.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="4" className="no-data">
+                            Không có dữ liệu điểm danh
                           </td>
                         </tr>
-                      ))}
+                      )}
                     </tbody>
                   </table>
                 </div>

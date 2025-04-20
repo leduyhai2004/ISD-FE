@@ -8,13 +8,16 @@ import FormModal from "../../components/admin/FormModal"
 import ConfirmModal from "../../components/admin/ConfirmModal"
 import UserAvatar from "../../components/UserAvatar"
 import { getTeachers, addTeacher, updateTeacher, deleteTeacher } from "../../api/mockTeachers"
+import { useDataSync } from "../../components/DataSyncProvider"
 import "../../styles/admin/TeacherManagement.css"
 
 const TeacherManagement = () => {
+  const { lastUpdate } = useDataSync()
   const [teachers, setTeachers] = useState([])
   const [loading, setLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
+  const [showViewModal, setShowViewModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [currentTeacher, setCurrentTeacher] = useState(null)
   const [successMessage, setSuccessMessage] = useState("")
@@ -32,7 +35,7 @@ const TeacherManagement = () => {
 
   useEffect(() => {
     loadTeachers()
-  }, [])
+  }, [lastUpdate.users]) // Reload when users data changes
 
   const loadTeachers = () => {
     setLoading(true)
@@ -93,6 +96,11 @@ const TeacherManagement = () => {
       .catch((error) => {
         console.error("Error deleting teacher:", error)
       })
+  }
+
+  const openViewModal = (teacher) => {
+    setCurrentTeacher(teacher)
+    setShowViewModal(true)
   }
 
   const openEditModal = (teacher) => {
@@ -188,10 +196,60 @@ const TeacherManagement = () => {
               data={teachers}
               columns={columns}
               actions={true}
+              onView={openViewModal}
               onEdit={openEditModal}
               onDelete={openDeleteModal}
             />
           )}
+
+          {/* View Teacher Modal */}
+          <FormModal isOpen={showViewModal} title="Thông tin giáo viên" onClose={() => setShowViewModal(false)}>
+            {currentTeacher && (
+              <div className="teacher-details">
+                <div className="teacher-detail-item">
+                  <span className="label">Họ và tên:</span>
+                  <span className="value">{currentTeacher.name}</span>
+                </div>
+                <div className="teacher-detail-item">
+                  <span className="label">Email:</span>
+                  <span className="value">{currentTeacher.email}</span>
+                </div>
+                <div className="teacher-detail-item">
+                  <span className="label">Số điện thoại:</span>
+                  <span className="value">{currentTeacher.phone}</span>
+                </div>
+                <div className="teacher-detail-item">
+                  <span className="label">Ngày sinh:</span>
+                  <span className="value">{currentTeacher.birthDate}</span>
+                </div>
+                <div className="teacher-detail-item">
+                  <span className="label">Địa chỉ:</span>
+                  <span className="value">{currentTeacher.address}</span>
+                </div>
+                <div className="teacher-detail-item">
+                  <span className="label">Người liên hệ khẩn cấp:</span>
+                  <span className="value">{currentTeacher.emergencyContact}</span>
+                </div>
+                <div className="teacher-detail-item">
+                  <span className="label">Ngày vào làm:</span>
+                  <span className="value">{currentTeacher.joinDate}</span>
+                </div>
+                <div className="teacher-detail-item">
+                  <span className="label">Bằng cấp:</span>
+                  <span className="value">{currentTeacher.degree}</span>
+                </div>
+                <div className="teacher-detail-item">
+                  <span className="label">Môn giảng dạy:</span>
+                  <span className="value">{currentTeacher.subject}</span>
+                </div>
+                <div className="form-actions">
+                  <button type="button" className="btn-cancel" onClick={() => setShowViewModal(false)}>
+                    Đóng
+                  </button>
+                </div>
+              </div>
+            )}
+          </FormModal>
 
           {/* Add Teacher Modal */}
           <FormModal isOpen={showAddModal} title="Thêm Giáo Viên" onClose={() => setShowAddModal(false)}>

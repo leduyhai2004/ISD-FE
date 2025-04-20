@@ -1,48 +1,60 @@
 // src/api/mockMessages.js
+import { messagesStore, generateId } from "./mockDataStore"
+import { getCurrentUser } from "./mockAuth"
 
-const messagesData = [
-    {
-      id: 1,
-      sender: "admin",
-      content: "Chào giáo viên, vui lòng kiểm tra thông báo mới.",
-      timestamp: "2024-03-10 08:30",
-      read: true,
-    },
-    {
-      id: 2,
-      sender: "user",
-      content: "Vâng, cảm ơn admin.",
-      timestamp: "2024-03-10 08:30",
-      read: true,
-    },
-    {
-      id: 3,
-      sender: "admin",
-      content: "OK.",
-      timestamp: "2024-03-10 08:30",
-      read: true,
-    },
-  ]
-  
-  export function getMessages() {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve([...messagesData]), 300)
-    })
-  }
-  
-  export function sendMessage(content) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
+export function getMessages() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const currentUser = getCurrentUser()
+      if (currentUser) {
+        const conversation = messagesStore.getConversationByTeacher(currentUser.id)
+        if (conversation) {
+          resolve([...conversation.messages])
+        } else {
+          resolve([])
+        }
+      } else {
+        resolve([])
+      }
+    }, 300)
+  })
+}
+
+export function sendMessage(content) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const currentUser = getCurrentUser()
+      if (currentUser) {
+        let conversation = messagesStore.getConversationByTeacher(currentUser.id)
+
+        // Create conversation if it doesn't exist
+        if (!conversation) {
+          conversation = {
+            id: generateId(messagesStore.conversations),
+            teacherId: currentUser.id,
+            teacherName: currentUser.name,
+            unreadCount: 0,
+            lastMessage: content,
+            lastMessageTime: new Date().toISOString().replace("T", " ").substring(0, 16),
+            messages: [],
+          }
+          messagesStore.addConversation(conversation)
+        }
+
+        // Add message to conversation
         const newMessage = {
-          id: messagesData.length + 1,
-          sender: "user",
+          id: conversation.messages.length + 1,
+          senderId: currentUser.id,
           content,
           timestamp: new Date().toISOString().replace("T", " ").substring(0, 16),
-          read: true,
+          read: false,
         }
-        messagesData.push(newMessage)
+
+        messagesStore.addMessage(conversation.id, newMessage)
         resolve(newMessage)
-      }, 300)
-    })
-  }
-  
+      } else {
+        resolve(null)
+      }
+    }, 300)
+  })
+}

@@ -1,4 +1,4 @@
-"use client"
+"\"use client"
 
 import { useState, useEffect } from "react"
 import AdminSidebar from "../../components/admin/AdminSidebar"
@@ -6,15 +6,18 @@ import AdminTopbar from "../../components/admin/AdminTopbar"
 import FormModal from "../../components/admin/FormModal"
 import { getAllAttendanceRecords, updateAttendanceRecord, addManualAttendance } from "../../api/mockAdminAttendance"
 import { getTeachers } from "../../api/mockTeachers"
+import { useDataSync } from "../../components/DataSyncProvider"
 import "../../styles/admin/AttendanceManagement.css"
 
 const AttendanceManagement = () => {
+  const { lastUpdate } = useDataSync()
   const [attendanceRecords, setAttendanceRecords] = useState([])
   const [teachers, setTeachers] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString("vi-VN"))
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
+  const [showViewModal, setShowViewModal] = useState(false)
   const [currentRecord, setCurrentRecord] = useState(null)
   const [formData, setFormData] = useState({
     teacherId: "",
@@ -31,6 +34,11 @@ const AttendanceManagement = () => {
   })
 
   useEffect(() => {
+    loadData()
+  }, [lastUpdate.attendance]) // Reload when attendance data changes
+
+  const loadData = () => {
+    setLoading(true)
     Promise.all([getAllAttendanceRecords(), getTeachers()])
       .then(([attendanceData, teachersData]) => {
         setAttendanceRecords(attendanceData)
@@ -41,7 +49,7 @@ const AttendanceManagement = () => {
         console.error("Error fetching data:", error)
         setLoading(false)
       })
-  }, [])
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -96,6 +104,13 @@ const AttendanceManagement = () => {
       .catch((error) => {
         console.error("Error updating attendance record:", error)
       })
+  }
+
+  const openViewModal = (record) => {
+    setCurrentRecord(record)
+    // Find the teacher for additional details
+    const teacher = teachers.find((t) => t.id === record.teacherId)
+    setShowViewModal(true)
   }
 
   const openEditModal = (record) => {
@@ -162,10 +177,12 @@ const AttendanceManagement = () => {
                   <option value="Đi muộn">Đi muộn</option>
                   <option value="Vắng mặt">Vắng mặt</option>
                   <option value="Nghỉ phép">Nghỉ phép</option>
+                  <option value="Đã Check In">Đã Check In</option>
+                  <option value="Đã Check Out">Đã Check Out</option>
                 </select>
               </div>
               <button className="add-attendance-btn" onClick={() => setShowAddModal(true)}>
-                <i className="fas fa-plus"></i> Thêm điểm danh
+                <i className="fas fa-plus"></i> Thêm điểm
               </button>
             </div>
           </div>
@@ -218,7 +235,7 @@ const AttendanceManagement = () => {
           )}
 
           {/* Add Attendance Modal */}
-          <FormModal isOpen={showAddModal} title="Thêm điểm danh mới" onClose={() => setShowAddModal(false)}>
+          <FormModal isOpen={showAddModal} title="Thêm điểm danh thủ công" onClose={() => setShowAddModal(false)}>
             <form onSubmit={handleAddAttendance}>
               <div className="form-group">
                 <label>Giáo viên</label>
@@ -233,23 +250,44 @@ const AttendanceManagement = () => {
               </div>
               <div className="form-group">
                 <label>Ngày</label>
-                <input type="date" name="date" value={formData.date} onChange={handleInputChange} required />
+                <input
+                  type="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleInputChange}
+                  placeholder="Chọn ngày"
+                  required
+                />
               </div>
               <div className="form-group">
-                <label>Giờ Check In</label>
-                <input type="time" name="checkIn" value={formData.checkIn} onChange={handleInputChange} />
+                <label>Check In</label>
+                <input
+                  type="time"
+                  name="checkIn"
+                  value={formData.checkIn}
+                  onChange={handleInputChange}
+                  placeholder="Nhập giờ Check In"
+                />
               </div>
               <div className="form-group">
-                <label>Giờ Check Out</label>
-                <input type="time" name="checkOut" value={formData.checkOut} onChange={handleInputChange} />
+                <label>Check Out</label>
+                <input
+                  type="time"
+                  name="checkOut"
+                  value={formData.checkOut}
+                  onChange={handleInputChange}
+                  placeholder="Nhập giờ Check Out"
+                />
               </div>
               <div className="form-group">
                 <label>Trạng thái</label>
-                <select name="status" value={formData.status} onChange={handleInputChange} required>
+                <select name="status" value={formData.status} onChange={handleInputChange}>
                   <option value="Đúng giờ">Đúng giờ</option>
                   <option value="Đi muộn">Đi muộn</option>
                   <option value="Vắng mặt">Vắng mặt</option>
                   <option value="Nghỉ phép">Nghỉ phép</option>
+                  <option value="Đã Check In">Đã Check In</option>
+                  <option value="Đã Check Out">Đã Check Out</option>
                 </select>
               </div>
               <div className="form-actions">
@@ -257,14 +295,14 @@ const AttendanceManagement = () => {
                   Hủy
                 </button>
                 <button type="submit" className="btn-submit">
-                  Thêm điểm danh
+                  Thêm
                 </button>
               </div>
             </form>
           </FormModal>
 
           {/* Edit Attendance Modal */}
-          <FormModal isOpen={showEditModal} title="Chỉnh sửa điểm danh" onClose={() => setShowEditModal(false)}>
+          <FormModal isOpen={showEditModal} title="Sửa thông tin điểm danh" onClose={() => setShowEditModal(false)}>
             <form onSubmit={handleEditAttendance}>
               <div className="form-group">
                 <label>Giáo viên</label>
@@ -275,20 +313,22 @@ const AttendanceManagement = () => {
                 <input type="date" name="date" value={formData.date} onChange={handleInputChange} required />
               </div>
               <div className="form-group">
-                <label>Giờ Check In</label>
+                <label>Check In</label>
                 <input type="time" name="checkIn" value={formData.checkIn} onChange={handleInputChange} />
               </div>
               <div className="form-group">
-                <label>Giờ Check Out</label>
+                <label>Check Out</label>
                 <input type="time" name="checkOut" value={formData.checkOut} onChange={handleInputChange} />
               </div>
               <div className="form-group">
                 <label>Trạng thái</label>
-                <select name="status" value={formData.status} onChange={handleInputChange} required>
+                <select name="status" value={formData.status} onChange={handleInputChange}>
                   <option value="Đúng giờ">Đúng giờ</option>
                   <option value="Đi muộn">Đi muộn</option>
                   <option value="Vắng mặt">Vắng mặt</option>
                   <option value="Nghỉ phép">Nghỉ phép</option>
+                  <option value="Đã Check In">Đã Check In</option>
+                  <option value="Đã Check Out">Đã Check Out</option>
                 </select>
               </div>
               <div className="form-actions">
@@ -296,7 +336,7 @@ const AttendanceManagement = () => {
                   Hủy
                 </button>
                 <button type="submit" className="btn-submit">
-                  Cập nhật
+                  Lưu
                 </button>
               </div>
             </form>
@@ -307,4 +347,4 @@ const AttendanceManagement = () => {
   )
 }
 
-export default AttendanceManagement
+export default AttendanceManagement;

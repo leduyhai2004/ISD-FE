@@ -1,43 +1,49 @@
 // src/api/mockLeave.js
+import { leaveRequestsStore, generateId } from "./mockDataStore"
+import { getCurrentUser } from "./mockAuth"
 
-const leaveRequestsData = [
-    {
-      id: 1,
-      type: "Nghỉ phép",
-      days: 2,
-      startDate: "22/04/2024",
-      endDate: "24/04/2024",
-      status: "Đã duyệt",
-      reason: "Việc gia đình",
-    },
-    {
-      id: 2,
-      type: "Nghỉ ốm",
-      days: 1,
-      startDate: "22/04/2024",
-      endDate: "22/04/2024",
-      status: "Chờ duyệt",
-      reason: "Bị cảm cúm",
-    },
-  ]
-  
-  export function getLeaveRequests() {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve([...leaveRequestsData]), 300)
-    })
-  }
-  
-  export function submitLeaveRequest(leaveData) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
+export function getLeaveRequests() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const currentUser = getCurrentUser()
+      if (currentUser) {
+        const requests = leaveRequestsStore.getRequestsByTeacher(currentUser.id)
+        // Format for teacher view
+        const formattedRequests = requests.map((req) => ({
+          id: req.id,
+          type: req.type,
+          days: req.days,
+          startDate: req.startDate,
+          endDate: req.endDate,
+          status: req.status === "approved" ? "Đã duyệt" : req.status === "rejected" ? "Từ chối" : "Chờ duyệt",
+          reason: req.reason,
+        }))
+        resolve([...formattedRequests])
+      } else {
+        resolve([])
+      }
+    }, 300)
+  })
+}
+
+export function submitLeaveRequest(leaveData) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const currentUser = getCurrentUser()
+      if (currentUser) {
         const newRequest = {
-          id: leaveRequestsData.length + 1,
+          id: generateId(leaveRequestsStore.requests),
+          teacherId: currentUser.id,
+          teacherName: currentUser.name,
           ...leaveData,
-          status: "Chờ duyệt",
+          status: "pending",
+          submittedDate: new Date().toLocaleDateString("vi-VN"),
         }
-        leaveRequestsData.push(newRequest)
+        leaveRequestsStore.addRequest(newRequest)
         resolve(newRequest)
-      }, 300)
-    })
-  }
-  
+      } else {
+        resolve(null)
+      }
+    }, 300)
+  })
+}

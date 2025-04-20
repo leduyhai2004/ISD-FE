@@ -1,4 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import { getCurrentUser } from "./api/mockAuth"
+import { DataSyncProvider } from "./components/DataSyncProvider"
 import Login from "./pages/Login"
 import Dashboard from "./pages/Dashboard"
 import ProfileView from "./pages/profile/ProfileView"
@@ -22,37 +24,189 @@ import AccountManagement from "./pages/admin/AccountManagement"
 import ContractManagement from "./pages/admin/ContractManagement"
 import ReportManagement from "./pages/admin/ReportManagement"
 
+// Protected route component
+const ProtectedRoute = ({ children, requiredRole }) => {
+  const user = getCurrentUser()
+
+  if (!user) {
+    // Not logged in, redirect to login
+    return <Navigate to="/" replace />
+  }
+
+  if (requiredRole && user.role !== requiredRole) {
+    // Wrong role, redirect to appropriate dashboard
+    return <Navigate to={user.role === "admin" ? "/admin" : "/dashboard"} replace />
+  }
+
+  return children
+}
+
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Trang đăng nhập */}
-        <Route path="/" element={<Login />} />
+    <DataSyncProvider>
+      <Router>
+        <Routes>
+          {/* Trang đăng nhập */}
+          <Route path="/" element={<Login />} />
 
-        {/* Trang giáo viên */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/profile/view" element={<ProfileView />} />
-        <Route path="/profile/edit" element={<ProfileEdit />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/messages" element={<Messages />} />
-        <Route path="/contract" element={<Contract />} />
-        <Route path="/leave" element={<LeaveRequest />} />
-        <Route path="/attendance" element={<CheckInOut />} />
-        <Route path="/attendance/history" element={<AttendanceHistory />} />
+          {/* Trang giáo viên */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute requiredRole="teacher">
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/view"
+            element={
+              <ProtectedRoute requiredRole="teacher">
+                <ProfileView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/edit"
+            element={
+              <ProtectedRoute requiredRole="teacher">
+                <ProfileEdit />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute requiredRole="teacher">
+                <Notifications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute requiredRole="teacher">
+                <Messages />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/contract"
+            element={
+              <ProtectedRoute requiredRole="teacher">
+                <Contract />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/leave"
+            element={
+              <ProtectedRoute requiredRole="teacher">
+                <LeaveRequest />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/attendance"
+            element={
+              <ProtectedRoute requiredRole="teacher">
+                <CheckInOut />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/attendance/history"
+            element={
+              <ProtectedRoute requiredRole="teacher">
+                <AttendanceHistory />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Trang admin */}
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/teachers" element={<TeacherManagement />} />
-        <Route path="/admin/leave" element={<LeaveManagement />} />
-        <Route path="/admin/attendance" element={<AttendanceManagement />} />
-        <Route path="/admin/notifications" element={<NotificationManagement />} />
-        <Route path="/admin/transfer" element={<TransferManagement />} />
-        <Route path="/admin/chat" element={<ChatManagement />} />
-        <Route path="/admin/accounts" element={<AccountManagement />} />
-        <Route path="/admin/contracts" element={<ContractManagement />} />
-        <Route path="/admin/reports" element={<ReportManagement />} />
-      </Routes>
-    </Router>
+          {/* Trang admin */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/teachers"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <TeacherManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/leave"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <LeaveManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/attendance"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AttendanceManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/notifications"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <NotificationManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/transfer"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <TransferManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/chat"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <ChatManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/accounts"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AccountManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/contracts"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <ContractManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/reports"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <ReportManagement />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </DataSyncProvider>
   )
 }
 

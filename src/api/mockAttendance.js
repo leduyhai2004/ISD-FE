@@ -1,36 +1,22 @@
 // src/api/mockAttendance.js
-
-let attendanceState = {
-  status: "not_checked_in",
-  checkInTime: "",
-  checkOutTime: "",
-};
-
-const historyState = [
-  {
-    id: 1,
-    date: "2025-04-14",
-    checkIn: "08:02",
-    checkOut: "17:00",
-    status: "Đúng giờ",
-  },
-  {
-    id: 2,
-    date: "2025-04-15",
-    checkIn: "08:10",
-    checkOut: "17:05",
-    status: "Đi muộn",
-  },
-  { id: 3, date: "2025-04-16", checkIn: "", checkOut: "", status: "Vắng mặt" },
-];
+import { attendanceStore, generateId } from "./mockDataStore"
+import { getCurrentUser } from "./mockAuth"
 
 /**
  * Lấy trạng thái hiện tại
  */
 export function getAttendance() {
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ ...attendanceState }), 300);
-  });
+    setTimeout(() => {
+      const currentUser = getCurrentUser()
+      if (currentUser) {
+        const state = attendanceStore.getUserAttendanceState(currentUser.id)
+        resolve({ ...state })
+      } else {
+        resolve({ status: "not_checked_in", checkInTime: "", checkOutTime: "" })
+      }
+    }, 300)
+  })
 }
 
 /**
@@ -40,20 +26,79 @@ export function getAttendance() {
 export function postAttendance(newState) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      attendanceState = { ...newState };
-      // Nếu check-out thì đẩy thêm vào lịch sử
-      if (newState.status === "checked_out") {
-        historyState.push({
-          id: historyState.length + 1,
-          date: new Date().toLocaleDateString(),
-          checkIn: newState.checkInTime.split(", ")[1] || "--",
-          checkOut: newState.checkOutTime.split(", ")[1],
-          status: "Đã Check Out",
-        });
+      const currentUser = getCurrentUser()
+      if (currentUser) {
+        // Update user attendance state
+        attendanceStore.updateUserAttendanceState(currentUser.id, newState)
+
+        // Get today's date in DD/MM/YYYY format
+        const today = new Date().toLocaleDateString("vi-VN")
+
+        // If check-in, create a new record or update existing one
+        if (newState.status === "checked_in") {
+          const checkInTime = newState.checkInTime.split(", ")[1] || "--"
+
+          // Check if there's already a record for today
+          const existingRecord = attendanceStore.records.find(
+            (record) => record.teacherId === currentUser.id && record.date === today,
+          )
+
+          if (existingRecord) {
+            // Update existing record
+            attendanceStore.updateRecord(existingRecord.id, {
+              checkIn: checkInTime,
+              status: "Đã Check In",
+            })
+          } else {
+            // Create new record
+            attendanceStore.addRecord({
+              id: generateId(attendanceStore.records),
+              teacherId: currentUser.id,
+              teacherName: currentUser.name,
+              date: today,
+              checkIn: checkInTime,
+              checkOut: "--",
+              status: "Đã Check In",
+            })
+          }
+        }
+
+        // If check-out, update the existing record
+        if (newState.status === "checked_out") {
+          const checkOutTime = newState.checkOutTime.split(", ")[1] || "--"
+
+          // Find today's record
+          const existingRecord = attendanceStore.records.find(
+            (record) => record.teacherId === currentUser.id && record.date === today,
+          )
+
+          if (existingRecord) {
+            // Update existing record
+            attendanceStore.updateRecord(existingRecord.id, {
+              checkOut: checkOutTime,
+              status: "Đã Check Out",
+            })
+          } else {
+            // Create new record with both check-in and check-out
+            const checkInTime = newState.checkInTime.split(", ")[1] || "--"
+            attendanceStore.addRecord({
+              id: generateId(attendanceStore.records),
+              teacherId: currentUser.id,
+              teacherName: currentUser.name,
+              date: today,
+              checkIn: checkInTime,
+              checkOut: checkOutTime,
+              status: "Đã Check Out",
+            })
+          }
+        }
+
+        resolve({ ...newState })
+      } else {
+        resolve({ status: "not_checked_in", checkInTime: "", checkOutTime: "" })
       }
-      resolve({ ...attendanceState });
-    }, 300);
-  });
+    }, 300)
+  })
 }
 
 /**
@@ -61,6 +106,14 @@ export function postAttendance(newState) {
  */
 export function getHistory() {
   return new Promise((resolve) => {
-    setTimeout(() => resolve([...historyState]), 300);
-  });
+    setTimeout(() => {
+      const currentUser = getCurrentUser()
+      if (currentUser) {
+        const history = attendanceStore.getRecordsByTeacher(currentUser.id)
+        resolve([...history])
+      } else {
+        resolve([])
+      }
+    }, 300)
+  })
 }
