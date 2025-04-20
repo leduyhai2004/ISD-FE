@@ -28,10 +28,11 @@ const CheckInOut = () => {
   }, [])
 
   const handleCheckIn = () => {
-    const now = new Date().toLocaleString()
+    const now = new Date()
+    const formattedDate = now.toLocaleString()
     postAttendance({
       status: "checked_in",
-      checkInTime: now,
+      checkInTime: formattedDate,
       checkOutTime: "",
     })
       .then((data) => {
@@ -39,10 +40,6 @@ const CheckInOut = () => {
         setCheckInTime(data.checkInTime)
         setMessage("Bạn đã Check In thành công!")
         setMessageType("success")
-
-        // Create attendance record for today
-        const today = new Date().toLocaleDateString("vi-VN")
-        const checkInTimeFormatted = now.split(", ")[1] || "--"
 
         // Clear message after 3 seconds
         setTimeout(() => {
@@ -56,11 +53,12 @@ const CheckInOut = () => {
   }
 
   const handleCheckOut = () => {
-    const now = new Date().toLocaleString()
+    const now = new Date()
+    const formattedDate = now.toLocaleString()
     postAttendance({
       status: "checked_out",
       checkInTime,
-      checkOutTime: now,
+      checkOutTime: formattedDate,
     })
       .then((data) => {
         setStatus(data.status)

@@ -101,6 +101,24 @@ export const attendanceStore = {
       checkOut: "17:05",
       status: "Đi muộn",
     },
+    {
+      id: 3,
+      teacherId: 1,
+      teacherName: "Nguyễn Văn A",
+      date: "18/04/2025",
+      checkIn: "07:45",
+      checkOut: "16:50",
+      status: "Đúng giờ",
+    },
+    {
+      id: 4,
+      teacherId: 1,
+      teacherName: "Nguyễn Văn A",
+      date: "17/04/2025",
+      checkIn: "08:05",
+      checkOut: "17:10",
+      status: "Đi muộn",
+    },
     // ... other attendance records
   ],
 

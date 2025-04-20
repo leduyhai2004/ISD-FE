@@ -19,10 +19,7 @@ export function getAttendance() {
   })
 }
 
-/**
- * Cập nhật trạng thái Check In / Check Out
- * @param {{ status: string, checkInTime: string, checkOutTime: string }} newState
- */
+// Update the postAttendance function to correctly extract and format time
 export function postAttendance(newState) {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -36,7 +33,29 @@ export function postAttendance(newState) {
 
         // If check-in, create a new record or update existing one
         if (newState.status === "checked_in") {
-          const checkInTime = newState.checkInTime.split(", ")[1] || "--"
+          // Extract time from the full datetime string or create it if needed
+          let checkInTime = ""
+          if (newState.checkInTime.includes(",")) {
+            checkInTime = newState.checkInTime.split(", ")[1].trim()
+          } else {
+            // If we only have the time without date
+            checkInTime = newState.checkInTime
+          }
+
+          // Determine status based on check-in time
+          let status = "Đúng giờ"
+
+          // Extract hours and minutes from checkInTime (format: HH:MM:SS)
+          const timeParts = checkInTime.split(":")
+          if (timeParts.length >= 2) {
+            const hours = Number.parseInt(timeParts[0])
+            const minutes = Number.parseInt(timeParts[1])
+
+            // If check-in time is after 8:00 AM, mark as late
+            if (hours > 8 || (hours === 8 && minutes > 0)) {
+              status = "Đi muộn"
+            }
+          }
 
           // Check if there's already a record for today
           const existingRecord = attendanceStore.records.find(
@@ -47,7 +66,7 @@ export function postAttendance(newState) {
             // Update existing record
             attendanceStore.updateRecord(existingRecord.id, {
               checkIn: checkInTime,
-              status: "Đã Check In",
+              status: status,
             })
           } else {
             // Create new record
@@ -58,14 +77,21 @@ export function postAttendance(newState) {
               date: today,
               checkIn: checkInTime,
               checkOut: "--",
-              status: "Đã Check In",
+              status: status,
             })
           }
         }
 
         // If check-out, update the existing record
         if (newState.status === "checked_out") {
-          const checkOutTime = newState.checkOutTime.split(", ")[1] || "--"
+          // Extract time from the full datetime string or create it if needed
+          let checkOutTime = ""
+          if (newState.checkOutTime.includes(",")) {
+            checkOutTime = newState.checkOutTime.split(", ")[1].trim()
+          } else {
+            // If we only have the time without date
+            checkOutTime = newState.checkOutTime
+          }
 
           // Find today's record
           const existingRecord = attendanceStore.records.find(
@@ -73,14 +99,36 @@ export function postAttendance(newState) {
           )
 
           if (existingRecord) {
-            // Update existing record
+            // Update existing record but keep the original status (based on check-in time)
             attendanceStore.updateRecord(existingRecord.id, {
               checkOut: checkOutTime,
-              status: "Đã Check Out",
+              status: existingRecord.status, // Keep the original status
             })
           } else {
             // Create new record with both check-in and check-out
-            const checkInTime = newState.checkInTime.split(", ")[1] || "--"
+            // This is an edge case - should rarely happen
+            let checkInTime = ""
+            if (newState.checkInTime.includes(",")) {
+              checkInTime = newState.checkInTime.split(", ")[1].trim()
+            } else {
+              checkInTime = newState.checkInTime || "--"
+            }
+
+            // Determine status based on check-in time
+            let status = "Đúng giờ"
+
+            // Extract hours and minutes from checkInTime
+            const timeParts = checkInTime.split(":")
+            if (timeParts.length >= 2) {
+              const hours = Number.parseInt(timeParts[0])
+              const minutes = Number.parseInt(timeParts[1])
+
+              // If check-in time is after 8:00 AM, mark as late
+              if (hours > 8 || (hours === 8 && minutes > 0)) {
+                status = "Đi muộn"
+              }
+            }
+
             attendanceStore.addRecord({
               id: generateId(attendanceStore.records),
               teacherId: currentUser.id,
@@ -88,7 +136,7 @@ export function postAttendance(newState) {
               date: today,
               checkIn: checkInTime,
               checkOut: checkOutTime,
-              status: "Đã Check Out",
+              status: status,
             })
           }
         }

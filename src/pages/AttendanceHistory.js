@@ -20,7 +20,13 @@ const AttendanceHistory = () => {
   const loadAttendanceHistory = () => {
     getHistory()
       .then((data) => {
-        setRecords(data)
+        // Sort records by date (newest first)
+        const sortedRecords = [...data].sort((a, b) => {
+          const dateA = a.date.split("/").reverse().join("")
+          const dateB = b.date.split("/").reverse().join("")
+          return dateB.localeCompare(dateA)
+        })
+        setRecords(sortedRecords)
         setLoading(false)
       })
       .catch(() => {
@@ -30,7 +36,11 @@ const AttendanceHistory = () => {
   }
 
   const filtered = records.filter(
-    (r) => r.date.includes(search) || r.status.toLowerCase().includes(search.toLowerCase()),
+    (r) =>
+      r.date.includes(search) ||
+      r.status.toLowerCase().includes(search.toLowerCase()) ||
+      (r.checkIn && r.checkIn.includes(search)) ||
+      (r.checkOut && r.checkOut.includes(search)),
   )
 
   return (
@@ -51,7 +61,7 @@ const AttendanceHistory = () => {
                 <div className="search-container">
                   <input
                     type="text"
-                    placeholder="Tìm kiếm..."
+                    placeholder="Tìm kiếm theo ngày, trạng thái hoặc giờ..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
