@@ -2,17 +2,17 @@
 // Central data store that acts as a single source of truth for all application data
 
 // Import event emitter for notifying components of data changes
-import { EventEmitter } from "events"
+import { EventEmitter } from "events";
 
 // Create event emitter instance
-export const dataEvents = new EventEmitter()
+export const dataEvents = new EventEmitter();
 
 // User accounts data store
 export const usersStore = {
   users: [
     {
       id: 1,
-      email: "teacher@example.com",
+      email: "teacher@gmail.com",
       username: "teacherA",
       password: "123456",
       name: "Nguyễn Văn A",
@@ -42,43 +42,43 @@ export const usersStore = {
 
   // Add a user to the store
   addUser(user) {
-    this.users.push(user)
-    dataEvents.emit("users-updated", this.users)
-    return user
+    this.users.push(user);
+    dataEvents.emit("users-updated", this.users);
+    return user;
   },
 
   // Update a user in the store
   updateUser(id, userData) {
-    const index = this.users.findIndex((user) => user.id === Number(id))
+    const index = this.users.findIndex((user) => user.id === Number(id));
     if (index !== -1) {
-      this.users[index] = { ...this.users[index], ...userData }
-      dataEvents.emit("users-updated", this.users)
-      return this.users[index]
+      this.users[index] = { ...this.users[index], ...userData };
+      dataEvents.emit("users-updated", this.users);
+      return this.users[index];
     }
-    return null
+    return null;
   },
 
   // Remove a user from the store
   removeUser(id) {
-    const index = this.users.findIndex((user) => user.id === Number(id))
+    const index = this.users.findIndex((user) => user.id === Number(id));
     if (index !== -1) {
-      const removedUser = this.users.splice(index, 1)[0]
-      dataEvents.emit("users-updated", this.users)
-      return removedUser
+      const removedUser = this.users.splice(index, 1)[0];
+      dataEvents.emit("users-updated", this.users);
+      return removedUser;
     }
-    return null
+    return null;
   },
 
   // Get a user by ID
   getUserById(id) {
-    return this.users.find((user) => user.id === Number(id)) || null
+    return this.users.find((user) => user.id === Number(id)) || null;
   },
 
   // Get all users with a specific role
   getUsersByRole(role) {
-    return this.users.filter((user) => user.role === role)
+    return this.users.filter((user) => user.role === role);
   },
-}
+};
 
 // Attendance data store
 export const attendanceStore = {
@@ -86,10 +86,10 @@ export const attendanceStore = {
     {
       id: 1,
       teacherId: 1,
-      teacherName: "Nguyễn Văn A",
+      teacherName: "Nguyễn Văn Anh",
       date: "19/04/2025",
-      checkIn: "07:55",
-      checkOut: "17:00",
+      checkIn: "7:55:12 AM",
+      checkOut: "17:00:12 PM",
       status: "Đúng giờ",
     },
     {
@@ -97,28 +97,11 @@ export const attendanceStore = {
       teacherId: 2,
       teacherName: "Trần Thị B",
       date: "19/04/2025",
-      checkIn: "08:10",
-      checkOut: "17:05",
+      checkIn: "8:10:12 AM",
+      checkOut: "17:05:43 PM",
       status: "Đi muộn",
     },
-    {
-      id: 3,
-      teacherId: 1,
-      teacherName: "Nguyễn Văn A",
-      date: "18/04/2025",
-      checkIn: "07:45",
-      checkOut: "16:50",
-      status: "Đúng giờ",
-    },
-    {
-      id: 4,
-      teacherId: 1,
-      teacherName: "Nguyễn Văn A",
-      date: "17/04/2025",
-      checkIn: "08:05",
-      checkOut: "17:10",
-      status: "Đi muộn",
-    },
+
     // ... other attendance records
   ],
 
@@ -129,44 +112,52 @@ export const attendanceStore = {
 
   // Add a record to the store
   addRecord(record) {
-    this.records.push(record)
-    dataEvents.emit("attendance-updated", this.records)
-    return record
+    this.records.push(record);
+    dataEvents.emit("attendance-updated", this.records);
+    return record;
   },
 
   // Update a record in the store
   updateRecord(id, recordData) {
-    const index = this.records.findIndex((record) => record.id === Number(id))
+    const index = this.records.findIndex((record) => record.id === Number(id));
     if (index !== -1) {
-      this.records[index] = { ...this.records[index], ...recordData }
-      dataEvents.emit("attendance-updated", this.records)
-      return this.records[index]
+      this.records[index] = { ...this.records[index], ...recordData };
+      dataEvents.emit("attendance-updated", this.records);
+      return this.records[index];
     }
-    return null
+    return null;
   },
 
   // Get records for a specific teacher
   getRecordsByTeacher(teacherId) {
-    return this.records.filter((record) => record.teacherId === Number(teacherId))
+    return this.records.filter(
+      (record) => record.teacherId === Number(teacherId)
+    );
   },
 
   // Get records for a specific date
   getRecordsByDate(date) {
-    return this.records.filter((record) => record.date === date)
+    return this.records.filter((record) => record.date === date);
   },
 
   // Update user attendance state
   updateUserAttendanceState(teacherId, state) {
-    this.userAttendanceState[teacherId] = state
-    dataEvents.emit("user-attendance-updated", { teacherId, state })
-    return state
+    this.userAttendanceState[teacherId] = state;
+    dataEvents.emit("user-attendance-updated", { teacherId, state });
+    return state;
   },
 
   // Get user attendance state
   getUserAttendanceState(teacherId) {
-    return this.userAttendanceState[teacherId] || { status: "not_checked_in", checkInTime: "", checkOutTime: "" }
+    return (
+      this.userAttendanceState[teacherId] || {
+        status: "not_checked_in",
+        checkInTime: "",
+        checkOutTime: "",
+      }
+    );
   },
-}
+};
 
 // Leave requests data store
 export const leaveRequestsStore = {
@@ -200,32 +191,36 @@ export const leaveRequestsStore = {
 
   // Add a request to the store
   addRequest(request) {
-    this.requests.push(request)
-    dataEvents.emit("leave-requests-updated", this.requests)
-    return request
+    this.requests.push(request);
+    dataEvents.emit("leave-requests-updated", this.requests);
+    return request;
   },
 
   // Update a request in the store
   updateRequest(id, requestData) {
-    const index = this.requests.findIndex((request) => request.id === Number(id))
+    const index = this.requests.findIndex(
+      (request) => request.id === Number(id)
+    );
     if (index !== -1) {
-      this.requests[index] = { ...this.requests[index], ...requestData }
-      dataEvents.emit("leave-requests-updated", this.requests)
-      return this.requests[index]
+      this.requests[index] = { ...this.requests[index], ...requestData };
+      dataEvents.emit("leave-requests-updated", this.requests);
+      return this.requests[index];
     }
-    return null
+    return null;
   },
 
   // Get requests for a specific teacher
   getRequestsByTeacher(teacherId) {
-    return this.requests.filter((request) => request.teacherId === Number(teacherId))
+    return this.requests.filter(
+      (request) => request.teacherId === Number(teacherId)
+    );
   },
 
   // Get requests by status
   getRequestsByStatus(status) {
-    return this.requests.filter((request) => request.status === status)
+    return this.requests.filter((request) => request.status === status);
   },
-}
+};
 
 // Contracts data store
 export const contractsStore = {
@@ -257,43 +252,51 @@ export const contractsStore = {
 
   // Add a contract to the store
   addContract(contract) {
-    this.contracts.push(contract)
-    dataEvents.emit("contracts-updated", this.contracts)
-    return contract
+    this.contracts.push(contract);
+    dataEvents.emit("contracts-updated", this.contracts);
+    return contract;
   },
 
   // Update a contract in the store
   updateContract(id, contractData) {
-    const index = this.contracts.findIndex((contract) => contract.id === Number(id))
+    const index = this.contracts.findIndex(
+      (contract) => contract.id === Number(id)
+    );
     if (index !== -1) {
-      this.contracts[index] = { ...this.contracts[index], ...contractData }
-      dataEvents.emit("contracts-updated", this.contracts)
-      return this.contracts[index]
+      this.contracts[index] = { ...this.contracts[index], ...contractData };
+      dataEvents.emit("contracts-updated", this.contracts);
+      return this.contracts[index];
     }
-    return null
+    return null;
   },
 
   // Remove a contract from the store
   removeContract(id) {
-    const index = this.contracts.findIndex((contract) => contract.id === Number(id))
+    const index = this.contracts.findIndex(
+      (contract) => contract.id === Number(id)
+    );
     if (index !== -1) {
-      const removedContract = this.contracts.splice(index, 1)[0]
-      dataEvents.emit("contracts-updated", this.contracts)
-      return removedContract
+      const removedContract = this.contracts.splice(index, 1)[0];
+      dataEvents.emit("contracts-updated", this.contracts);
+      return removedContract;
     }
-    return null
+    return null;
   },
 
   // Get a contract by teacher ID
   getContractByTeacher(teacherId) {
-    return this.contracts.find((contract) => contract.teacherId === Number(teacherId)) || null
+    return (
+      this.contracts.find(
+        (contract) => contract.teacherId === Number(teacherId)
+      ) || null
+    );
   },
 
   // Get contracts by status
   getContractsByStatus(status) {
-    return this.contracts.filter((contract) => contract.status === status)
+    return this.contracts.filter((contract) => contract.status === status);
   },
-}
+};
 
 // Messages and chat data store
 export const messagesStore = {
@@ -327,54 +330,61 @@ export const messagesStore = {
 
   // Add a conversation to the store
   addConversation(conversation) {
-    this.conversations.push(conversation)
-    dataEvents.emit("conversations-updated", this.conversations)
-    return conversation
+    this.conversations.push(conversation);
+    dataEvents.emit("conversations-updated", this.conversations);
+    return conversation;
   },
 
   // Add a message to a conversation
   addMessage(conversationId, message) {
-    const index = this.conversations.findIndex((conv) => conv.id === Number(conversationId))
+    const index = this.conversations.findIndex(
+      (conv) => conv.id === Number(conversationId)
+    );
     if (index !== -1) {
-      const conversation = this.conversations[index]
-      conversation.messages.push(message)
-      conversation.lastMessage = message.content
-      conversation.lastMessageTime = message.timestamp
+      const conversation = this.conversations[index];
+      conversation.messages.push(message);
+      conversation.lastMessage = message.content;
+      conversation.lastMessageTime = message.timestamp;
 
       // Update unread count if message is from teacher to admin
       if (message.senderId !== "admin") {
-        conversation.unreadCount += 1
+        conversation.unreadCount += 1;
       }
 
-      dataEvents.emit("conversation-updated", conversation)
-      return message
+      dataEvents.emit("conversation-updated", conversation);
+      return message;
     }
-    return null
+    return null;
   },
 
   // Mark conversation as read
   markConversationAsRead(conversationId) {
-    const index = this.conversations.findIndex((conv) => conv.id === Number(conversationId))
+    const index = this.conversations.findIndex(
+      (conv) => conv.id === Number(conversationId)
+    );
     if (index !== -1) {
-      const conversation = this.conversations[index]
-      conversation.unreadCount = 0
+      const conversation = this.conversations[index];
+      conversation.unreadCount = 0;
       conversation.messages.forEach((msg) => {
         if (msg.senderId !== "admin") {
-          msg.read = true
+          msg.read = true;
         }
-      })
+      });
 
-      dataEvents.emit("conversation-updated", conversation)
-      return conversation
+      dataEvents.emit("conversation-updated", conversation);
+      return conversation;
     }
-    return null
+    return null;
   },
 
   // Get conversation by teacher ID
   getConversationByTeacher(teacherId) {
-    return this.conversations.find((conv) => conv.teacherId === Number(teacherId)) || null
+    return (
+      this.conversations.find((conv) => conv.teacherId === Number(teacherId)) ||
+      null
+    );
   },
-}
+};
 
 // Notifications data store
 export const notificationsStore = {
@@ -421,12 +431,14 @@ export const notificationsStore = {
 
   // Add a notification to the store
   addNotification(notification) {
-    this.notifications.push(notification)
+    this.notifications.push(notification);
 
     // If notification is for all users or specific users, add to their notifications
     if (notification.sentTo === "all") {
       // Add to all teacher users
-      const teacherIds = usersStore.getUsersByRole("teacher").map((user) => user.id)
+      const teacherIds = usersStore
+        .getUsersByRole("teacher")
+        .map((user) => user.id);
       teacherIds.forEach((teacherId) => {
         this.addUserNotification(teacherId, {
           id: this.getUserNotifications(teacherId).length + 1,
@@ -434,8 +446,8 @@ export const notificationsStore = {
           content: notification.content,
           date: notification.date,
           read: false,
-        })
-      })
+        });
+      });
     } else if (notification.sentTo === "specific" && notification.recipients) {
       // Add to specific users
       notification.recipients.forEach((teacherId) => {
@@ -445,44 +457,52 @@ export const notificationsStore = {
           content: notification.content,
           date: notification.date,
           read: false,
-        })
-      })
+        });
+      });
     }
 
-    dataEvents.emit("notifications-updated", this.notifications)
-    return notification
+    dataEvents.emit("notifications-updated", this.notifications);
+    return notification;
   },
 
   // Add a notification for a specific user
   addUserNotification(userId, notification) {
     if (!this.userNotifications[userId]) {
-      this.userNotifications[userId] = []
+      this.userNotifications[userId] = [];
     }
-    this.userNotifications[userId].push(notification)
-    dataEvents.emit("user-notifications-updated", { userId, notifications: this.userNotifications[userId] })
-    return notification
+    this.userNotifications[userId].push(notification);
+    dataEvents.emit("user-notifications-updated", {
+      userId,
+      notifications: this.userNotifications[userId],
+    });
+    return notification;
   },
 
   // Mark a user notification as read
   markUserNotificationAsRead(userId, notificationId) {
     if (this.userNotifications[userId]) {
-      const index = this.userNotifications[userId].findIndex((notif) => notif.id === Number(notificationId))
+      const index = this.userNotifications[userId].findIndex(
+        (notif) => notif.id === Number(notificationId)
+      );
       if (index !== -1) {
-        this.userNotifications[userId][index].read = true
-        dataEvents.emit("user-notifications-updated", { userId, notifications: this.userNotifications[userId] })
-        return true
+        this.userNotifications[userId][index].read = true;
+        dataEvents.emit("user-notifications-updated", {
+          userId,
+          notifications: this.userNotifications[userId],
+        });
+        return true;
       }
     }
-    return false
+    return false;
   },
 
   // Get notifications for a specific user
   getUserNotifications(userId) {
-    return this.userNotifications[userId] || []
+    return this.userNotifications[userId] || [];
   },
-}
+};
 
 // Helper function to generate unique IDs
 export function generateId(collection) {
-  return Math.max(0, ...collection.map((item) => item.id)) + 1
+  return Math.max(0, ...collection.map((item) => item.id)) + 1;
 }

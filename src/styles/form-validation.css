@@ -1,0 +1,86 @@
+/* Form validation styles */
+.form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    transition: border-color 0.2s ease;
+  }
+  
+  .form-control:focus {
+    border-color: #2563eb;
+    outline: none;
+  }
+  
+  .form-control.is-invalid {
+    border-color: #dc3545;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px 16px;
+    padding-right: 32px;
+  }
+  
+  .invalid-feedback {
+    display: block;
+    width: 100%;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #dc3545;
+  }
+  
+  .required {
+    color: #dc3545;
+  }
+  
+  .form-hint {
+    font-size: 12px;
+    color: #666;
+    margin-top: -10px;
+    margin-bottom: 15px;
+  }
+  
+  /* Example form container */
+  .form-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-title {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .form-submit-btn {
+    background-color: #1f3b87;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    height: 44px;
+    width: 100%;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .form-submit-btn:hover {
+    background-color: #2d4fa9;
+  }
+  
+  .form-submit-btn:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+  }
+  

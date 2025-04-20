@@ -1,142 +1,177 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import AdminSidebar from "../../components/admin/AdminSidebar"
-import AdminTopbar from "../../components/admin/AdminTopbar"
-import FormModal from "../../components/admin/FormModal"
-import ConfirmModal from "../../components/admin/ConfirmModal"
-import UserAvatar from "../../components/UserAvatar"
+import { useState, useEffect } from "react";
+import AdminSidebar from "../../components/admin/AdminSidebar";
+import AdminTopbar from "../../components/admin/AdminTopbar";
+import FormModal from "../../components/admin/FormModal";
+import ConfirmModal from "../../components/admin/ConfirmModal";
+import UserAvatar from "../../components/UserAvatar";
 import {
   getAllTeacherAccounts,
   createTeacherAccount,
   resetTeacherPassword,
   deleteTeacherAccount,
-} from "../../api/mockAuth"
-import "../../styles/admin/AccountManagement.css"
+} from "../../api/mockAuth";
+import "../../styles/admin/AccountManagement.css";
+import "../../styles/form-validation.css";
+import { useFormValidation } from "../../components/FormValidation";
+import InputField from "../../components/InputField";
 
 const AccountManagement = () => {
-  const [accounts, setAccounts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showAddModal, setShowAddModal] = useState(false)
-  const [showResetModal, setShowResetModal] = useState(false)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [currentAccount, setCurrentAccount] = useState(null)
-  const [successMessage, setSuccessMessage] = useState("")
-  const [errorMessage, setErrorMessage] = useState("")
+  const [accounts, setAccounts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [currentAccount, setCurrentAccount] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState({
     teacherName: "",
     username: "",
     password: "",
     confirmPassword: "",
-  })
+  });
   const [resetPasswordData, setResetPasswordData] = useState({
     newPassword: "",
     confirmPassword: "",
-  })
+  });
+
+  const { errors, validateUsername, validatePassword, validateForm, setError } =
+    useFormValidation();
 
   useEffect(() => {
-    loadAccounts()
-  }, [])
+    loadAccounts();
+  }, []);
 
   const loadAccounts = () => {
-    setLoading(true)
+    setLoading(true);
     getAllTeacherAccounts()
       .then((data) => {
-        setAccounts(data)
-        setLoading(false)
+        setAccounts(data);
+        setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching accounts:", error)
-        setLoading(false)
-      })
-  }
+        console.error("Error fetching accounts:", error);
+        setLoading(false);
+      });
+  };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
-    })
-  }
+    });
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "username") {
+      validateUsername(value);
+    } else if (name === "password") {
+      validatePassword(value);
+    }
+  };
 
   const handleResetPasswordChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setResetPasswordData({
       ...resetPasswordData,
       [name]: value,
-    })
-  }
+    });
+  };
 
   const showSuccess = (message) => {
-    setSuccessMessage(message)
-    setTimeout(() => setSuccessMessage(""), 3000)
-  }
+    setSuccessMessage(message);
+    setTimeout(() => setSuccessMessage(""), 3000);
+  };
 
   const showError = (message) => {
-    setErrorMessage(message)
-    setTimeout(() => setErrorMessage(""), 3000)
-  }
+    setErrorMessage(message);
+    setTimeout(() => setErrorMessage(""), 3000);
+  };
 
   const handleAddAccount = (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    // Validate form
+    const isUsernameValid = validateUsername(formData.username);
+    const isPasswordValid = validatePassword(formData.password);
+
+    if (!isUsernameValid || !isPasswordValid) return;
 
     if (formData.password !== formData.confirmPassword) {
-      showError("Mật khẩu xác nhận không khớp!")
-      return
+      setError("confirmPassword", "Mật khẩu xác nhận không khớp!");
+      return;
     }
 
-    createTeacherAccount(formData.teacherName, formData.username, formData.password)
+    createTeacherAccount(
+      formData.teacherName,
+      formData.username,
+      formData.password
+    )
       .then((newAccount) => {
-        setAccounts([...accounts, newAccount])
-        setShowAddModal(false)
-        resetForm()
-        showSuccess("Tạo tài khoản thành công!")
+        setAccounts([...accounts, newAccount]);
+        setShowAddModal(false);
+        resetForm();
+        showSuccess("Tạo tài khoản thành công!");
       })
       .catch((error) => {
-        showError(error.message)
-      })
-  }
+        showError(error.message);
+      });
+  };
 
   const handleResetPassword = (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    // Validate password
+    const isValid = validatePassword(
+      resetPasswordData.newPassword,
+      "newPassword"
+    );
+    if (!isValid) return;
 
     if (resetPasswordData.newPassword !== resetPasswordData.confirmPassword) {
-      showError("Mật khẩu xác nhận không khớp!")
-      return
+      setError("confirmNewPassword", "Mật khẩu xác nhận không khớp!");
+      return;
     }
 
     resetTeacherPassword(currentAccount.id, resetPasswordData.newPassword)
       .then(() => {
-        setShowResetModal(false)
-        resetResetPasswordForm()
-        showSuccess("Đặt lại mật khẩu thành công!")
+        setShowResetModal(false);
+        resetResetPasswordForm();
+        showSuccess("Đặt lại mật khẩu thành công!");
       })
       .catch((error) => {
-        showError(error.message)
-      })
-  }
+        showError(error.message);
+      });
+  };
 
   const handleDeleteAccount = () => {
     deleteTeacherAccount(currentAccount.id)
       .then(() => {
-        setAccounts(accounts.filter((account) => account.id !== currentAccount.id))
-        setShowDeleteModal(false)
-        showSuccess("Xóa tài khoản thành công!")
+        setAccounts(
+          accounts.filter((account) => account.id !== currentAccount.id)
+        );
+        setShowDeleteModal(false);
+        showSuccess("Xóa tài khoản thành công!");
       })
       .catch((error) => {
-        showError(error.message)
-      })
-  }
+        showError(error.message);
+      });
+  };
 
   const openResetModal = (account) => {
-    setCurrentAccount(account)
-    setShowResetModal(true)
-  }
+    setCurrentAccount(account);
+    setShowResetModal(true);
+  };
 
   const openDeleteModal = (account) => {
-    setCurrentAccount(account)
-    setShowDeleteModal(true)
-  }
+    setCurrentAccount(account);
+    setShowDeleteModal(true);
+  };
 
   const resetForm = () => {
     setFormData({
@@ -144,15 +179,15 @@ const AccountManagement = () => {
       username: "",
       password: "",
       confirmPassword: "",
-    })
-  }
+    });
+  };
 
   const resetResetPasswordForm = () => {
     setResetPasswordData({
       newPassword: "",
       confirmPassword: "",
-    })
-  }
+    });
+  };
 
   return (
     <div className="admin-dashboard">
@@ -162,12 +197,17 @@ const AccountManagement = () => {
         <div className="admin-content-body">
           <div className="account-management-header">
             <h3>Tạo tài khoản giáo viên</h3>
-            <button className="add-account-btn" onClick={() => setShowAddModal(true)}>
+            <button
+              className="add-account-btn"
+              onClick={() => setShowAddModal(true)}
+            >
               <i className="fas fa-plus"></i> Tạo tài khoản mới
             </button>
           </div>
 
-          {successMessage && <div className="alert success">{successMessage}</div>}
+          {successMessage && (
+            <div className="alert success">{successMessage}</div>
+          )}
           {errorMessage && <div className="alert error">{errorMessage}</div>}
 
           {loading ? (
@@ -199,10 +239,16 @@ const AccountManagement = () => {
                         <td>{account.createdDate}</td>
                         <td>
                           <div className="account-actions">
-                            <button className="btn-reset" onClick={() => openResetModal(account)}>
+                            <button
+                              className="btn-reset"
+                              onClick={() => openResetModal(account)}
+                            >
                               <i className="fas fa-key"></i> Đặt lại mật khẩu
                             </button>
-                            <button className="btn-delete" onClick={() => openDeleteModal(account)}>
+                            <button
+                              className="btn-delete"
+                              onClick={() => openDeleteModal(account)}
+                            >
                               <i className="fas fa-trash-alt"></i> Xóa
                             </button>
                           </div>
@@ -222,52 +268,65 @@ const AccountManagement = () => {
           )}
 
           {/* Add Account Modal */}
-          <FormModal isOpen={showAddModal} title="Tạo tài khoản giáo viên mới" onClose={() => setShowAddModal(false)}>
+          <FormModal
+            isOpen={showAddModal}
+            title="Tạo tài khoản giáo viên mới"
+            onClose={() => setShowAddModal(false)}
+          >
             <form onSubmit={handleAddAccount}>
-              <div className="form-group">
-                <label>Tên giáo viên</label>
-                <input
-                  type="text"
-                  name="teacherName"
-                  value={formData.teacherName}
-                  onChange={handleInputChange}
-                  placeholder="VD: Nguyễn Văn A"
-                  required
-                />
+              <InputField
+                type="text"
+                name="teacherName"
+                label="Tên giáo viên"
+                value={formData.teacherName}
+                onChange={handleInputChange}
+                placeholder="VD: Nguyễn Văn A"
+                required
+              />
+
+              <InputField
+                type="text"
+                name="username"
+                label="Tên đăng nhập"
+                value={formData.username}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                placeholder="VD: teachera"
+                error={errors.username}
+                required
+              />
+              <div className="form-hint">
+                Tên đăng nhập chỉ được chứa chữ cái tiếng Anh viết thường, số và
+                dấu gạch dưới
               </div>
-              <div className="form-group">
-                <label>Tên đăng nhập</label>
-                <input
-                  type="text"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleInputChange}
-                  placeholder="VD: teacherA"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Mật khẩu</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Xác nhận mật khẩu</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
+
+              <InputField
+                type="password"
+                name="password"
+                label="Mật khẩu"
+                value={formData.password}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                error={errors.password}
+                required
+              />
+
+              <InputField
+                type="password"
+                name="confirmPassword"
+                label="Xác nhận mật khẩu"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                error={errors.confirmPassword}
+                required
+              />
+
               <div className="form-actions">
-                <button type="button" className="btn-cancel" onClick={() => setShowAddModal(false)}>
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={() => setShowAddModal(false)}
+                >
                   Hủy
                 </button>
                 <button type="submit" className="btn-submit">
@@ -284,28 +343,32 @@ const AccountManagement = () => {
             onClose={() => setShowResetModal(false)}
           >
             <form onSubmit={handleResetPassword}>
-              <div className="form-group">
-                <label>Mật khẩu mới</label>
-                <input
-                  type="password"
-                  name="newPassword"
-                  value={resetPasswordData.newPassword}
-                  onChange={handleResetPasswordChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Xác nhận mật khẩu</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={resetPasswordData.confirmPassword}
-                  onChange={handleResetPasswordChange}
-                  required
-                />
-              </div>
+              <InputField
+                type="password"
+                name="newPassword"
+                label="Mật khẩu mới"
+                value={resetPasswordData.newPassword}
+                onChange={handleResetPasswordChange}
+                error={errors.newPassword}
+                required
+              />
+
+              <InputField
+                type="password"
+                name="confirmPassword"
+                label="Xác nhận mật khẩu"
+                value={resetPasswordData.confirmPassword}
+                onChange={handleResetPasswordChange}
+                error={errors.confirmNewPassword}
+                required
+              />
+
               <div className="form-actions">
-                <button type="button" className="btn-cancel" onClick={() => setShowResetModal(false)}>
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={() => setShowResetModal(false)}
+                >
                   Hủy
                 </button>
                 <button type="submit" className="btn-submit">
@@ -326,7 +389,7 @@ const AccountManagement = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AccountManagement
+export default AccountManagement;

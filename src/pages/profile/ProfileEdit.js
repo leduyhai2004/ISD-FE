@@ -1,10 +1,13 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Sidebar from "../../components/Sidebar"
-import Topbar from "../../components/Topbar"
-import { getUserProfile, updateUserProfile } from "../../api/mockProfile"
-import "../../styles/profile/profile_edit.css"
+import { useState, useEffect } from "react";
+import Sidebar from "../../components/Sidebar";
+import Topbar from "../../components/Topbar";
+import { getUserProfile, updateUserProfile } from "../../api/mockProfile";
+import "../../styles/profile/profile_edit.css";
+import "../../styles/form-validation.css";
+import { useFormValidation } from "../../components/FormValidation";
+import InputField from "../../components/InputField";
 
 const ProfileEdit = () => {
   const [profile, setProfile] = useState({
@@ -12,10 +15,11 @@ const ProfileEdit = () => {
     email: "",
     address: "",
     emergencyContact: "",
-  })
-  const [loading, setLoading] = useState(true)
-  const [showSuccess, setShowSuccess] = useState(false)
-  const [error, setError] = useState("")
+  });
+  const [loading, setLoading] = useState(true);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const { errors, validateGmail, validatePhone, validateForm } =
+    useFormValidation();
 
   useEffect(() => {
     getUserProfile()
@@ -26,39 +30,55 @@ const ProfileEdit = () => {
             email: data.email || "",
             address: data.address || "",
             emergencyContact: data.emergencyContact || "",
-          })
+          });
         }
-        setLoading(false)
+        setLoading(false);
       })
       .catch((err) => {
-        setError("Không thể tải thông tin người dùng")
-        setLoading(false)
-      })
-  }, [])
+        setLoading(false);
+      });
+  }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setProfile({
       ...profile,
       [name]: value,
-    })
-  }
+    });
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "email") {
+      validateGmail(value, name);
+    } else if (name === "phone") {
+      validatePhone(value, name);
+    }
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    setError("")
+    e.preventDefault();
+
+    // Validate all fields
+    const isValid = validateForm({
+      email: profile.email,
+      phone: profile.phone,
+    });
+
+    if (!isValid) return;
 
     updateUserProfile(profile)
       .then(() => {
-        setShowSuccess(true)
+        setShowSuccess(true);
         setTimeout(() => {
-          setShowSuccess(false)
-        }, 3000)
+          setShowSuccess(false);
+        }, 3000);
       })
       .catch((err) => {
-        setError(err.message || "Có lỗi xảy ra khi cập nhật thông tin")
-      })
-  }
+        // Handle error
+      });
+  };
 
   return (
     <div className="dashboard-container">
@@ -68,27 +88,51 @@ const ProfileEdit = () => {
         <div className="scroll-content">
           <h2 className="page-title">Cập nhật Thông tin Cá Nhân</h2>
 
-          {showSuccess && <div className="alert success">Thông tin cá nhân đã được cập nhật thành công!</div>}
-
-          {error && <div className="alert error">{error}</div>}
+          {showSuccess && (
+            <div className="alert success">
+              Thông tin cá nhân đã được cập nhật thành công!
+            </div>
+          )}
 
           {loading ? (
             <p>Đang tải thông tin...</p>
           ) : (
             <form className="profile-form" onSubmit={handleSubmit}>
-              <label>Số điện thoại *</label>
-              <input type="text" name="phone" value={profile.phone} onChange={handleChange} required />
+              <InputField
+                type="tel"
+                name="phone"
+                label="Số điện thoại"
+                value={profile.phone}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.phone}
+                required
+              />
 
-              <label>Email *</label>
-              <input type="email" name="email" value={profile.email} onChange={handleChange} required />
+              <InputField
+                type="email"
+                name="email"
+                label="Email"
+                value={profile.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.email}
+                required
+              />
 
-              <label>Địa chỉ *</label>
-              <input type="text" name="address" value={profile.address} onChange={handleChange} required />
+              <InputField
+                type="text"
+                name="address"
+                label="Địa chỉ"
+                value={profile.address}
+                onChange={handleChange}
+                required
+              />
 
-              <label>Người liên hệ khẩn cấp *</label>
-              <input
+              <InputField
                 type="text"
                 name="emergencyContact"
+                label="Người liên hệ khẩn cấp"
                 value={profile.emergencyContact}
                 onChange={handleChange}
                 required
@@ -102,7 +146,7 @@ const ProfileEdit = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfileEdit
+export default ProfileEdit;

@@ -1,26 +1,33 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import AdminSidebar from "../../components/admin/AdminSidebar"
-import AdminTopbar from "../../components/admin/AdminTopbar"
-import DataTable from "../../components/admin/DataTable"
-import FormModal from "../../components/admin/FormModal"
-import ConfirmModal from "../../components/admin/ConfirmModal"
-import UserAvatar from "../../components/UserAvatar"
-import { getTeachers, addTeacher, updateTeacher, deleteTeacher } from "../../api/mockTeachers"
-import { useDataSync } from "../../components/DataSyncProvider"
-import "../../styles/admin/TeacherManagement.css"
+import { useState, useEffect } from "react";
+import AdminSidebar from "../../components/admin/AdminSidebar";
+import AdminTopbar from "../../components/admin/AdminTopbar";
+import DataTable from "../../components/admin/DataTable";
+import FormModal from "../../components/admin/FormModal";
+import ConfirmModal from "../../components/admin/ConfirmModal";
+import UserAvatar from "../../components/UserAvatar";
+import {
+  getTeachers,
+  addTeacher,
+  updateTeacher,
+  deleteTeacher,
+} from "../../api/mockTeachers";
+import { useDataSync } from "../../components/DataSyncProvider";
+import "../../styles/admin/TeacherManagement.css";
+import "../../styles/form-validation.css";
+import { useFormValidation } from "../../components/FormValidation";
 
 const TeacherManagement = () => {
-  const { lastUpdate } = useDataSync()
-  const [teachers, setTeachers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showAddModal, setShowAddModal] = useState(false)
-  const [showEditModal, setShowEditModal] = useState(false)
-  const [showViewModal, setShowViewModal] = useState(false)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [currentTeacher, setCurrentTeacher] = useState(null)
-  const [successMessage, setSuccessMessage] = useState("")
+  const { lastUpdate } = useDataSync();
+  const [teachers, setTeachers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [currentTeacher, setCurrentTeacher] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -31,80 +38,113 @@ const TeacherManagement = () => {
     joinDate: "",
     degree: "",
     subject: "Toán", // Default subject
-  })
+  });
+
+  const { errors, validateGmail, validatePhone, validateForm } =
+    useFormValidation();
 
   useEffect(() => {
-    loadTeachers()
-  }, [lastUpdate.users]) // Reload when users data changes
+    loadTeachers();
+  }, [lastUpdate.users]); // Reload when users data changes
 
   const loadTeachers = () => {
-    setLoading(true)
+    setLoading(true);
     getTeachers()
       .then((data) => {
-        setTeachers(data)
-        setLoading(false)
+        setTeachers(data);
+        setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching teachers:", error)
-        setLoading(false)
-      })
-  }
+        console.error("Error fetching teachers:", error);
+        setLoading(false);
+      });
+  };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
-    })
-  }
+    });
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "phone") {
+      validatePhone(value);
+    } else if (name === "email") {
+      validateGmail(value);
+    }
+  };
 
   const handleAddTeacher = (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    // Validate form
+    const isValid = validateForm({
+      email: formData.email,
+      phone: formData.phone,
+    });
+
+    if (!isValid) return;
+
     addTeacher(formData)
       .then((newTeacher) => {
-        setTeachers([...teachers, newTeacher])
-        setShowAddModal(false)
-        resetForm()
-        showSuccessMessage("Thêm giáo viên thành công!")
+        setTeachers([...teachers, newTeacher]);
+        setShowAddModal(false);
+        resetForm();
+        showSuccessMessage("Thêm giáo viên thành công!");
       })
       .catch((error) => {
-        console.error("Error adding teacher:", error)
-      })
-  }
+        console.error("Error adding teacher:", error);
+      });
+  };
 
   const handleEditTeacher = (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    // Validate form
+    const isValid = validateForm({
+      email: formData.email,
+      phone: formData.phone,
+    });
+
+    if (!isValid) return;
+
     updateTeacher(currentTeacher.id, formData)
       .then((updatedTeacher) => {
-        setTeachers(teachers.map((t) => (t.id === updatedTeacher.id ? updatedTeacher : t)))
-        setShowEditModal(false)
-        resetForm()
-        showSuccessMessage("Cập nhật thông tin giáo viên thành công!")
+        setTeachers(
+          teachers.map((t) => (t.id === updatedTeacher.id ? updatedTeacher : t))
+        );
+        setShowEditModal(false);
+        resetForm();
+        showSuccessMessage("Cập nhật thông tin giáo viên thành công!");
       })
       .catch((error) => {
-        console.error("Error updating teacher:", error)
-      })
-  }
+        console.error("Error updating teacher:", error);
+      });
+  };
 
   const handleDeleteTeacher = () => {
     deleteTeacher(currentTeacher.id)
       .then(() => {
-        setTeachers(teachers.filter((t) => t.id !== currentTeacher.id))
-        setShowDeleteModal(false)
-        showSuccessMessage("Xóa giáo viên thành công!")
+        setTeachers(teachers.filter((t) => t.id !== currentTeacher.id));
+        setShowDeleteModal(false);
+        showSuccessMessage("Xóa giáo viên thành công!");
       })
       .catch((error) => {
-        console.error("Error deleting teacher:", error)
-      })
-  }
+        console.error("Error deleting teacher:", error);
+      });
+  };
 
   const openViewModal = (teacher) => {
-    setCurrentTeacher(teacher)
-    setShowViewModal(true)
-  }
+    setCurrentTeacher(teacher);
+    setShowViewModal(true);
+  };
 
   const openEditModal = (teacher) => {
-    setCurrentTeacher(teacher)
+    setCurrentTeacher(teacher);
     setFormData({
       name: teacher.name,
       email: teacher.email,
@@ -115,14 +155,14 @@ const TeacherManagement = () => {
       joinDate: teacher.joinDate,
       degree: teacher.degree || "",
       subject: teacher.subject,
-    })
-    setShowEditModal(true)
-  }
+    });
+    setShowEditModal(true);
+  };
 
   const openDeleteModal = (teacher) => {
-    setCurrentTeacher(teacher)
-    setShowDeleteModal(true)
-  }
+    setCurrentTeacher(teacher);
+    setShowDeleteModal(true);
+  };
 
   const resetForm = () => {
     setFormData({
@@ -135,16 +175,16 @@ const TeacherManagement = () => {
       joinDate: "",
       degree: "",
       subject: "Toán",
-    })
-    setCurrentTeacher(null)
-  }
+    });
+    setCurrentTeacher(null);
+  };
 
   const showSuccessMessage = (message) => {
-    setSuccessMessage(message)
+    setSuccessMessage(message);
     setTimeout(() => {
-      setSuccessMessage("")
-    }, 3000)
-  }
+      setSuccessMessage("");
+    }, 3000);
+  };
 
   const columns = [
     {
@@ -172,7 +212,7 @@ const TeacherManagement = () => {
         </span>
       ),
     },
-  ]
+  ];
 
   return (
     <div className="admin-dashboard">
@@ -182,12 +222,17 @@ const TeacherManagement = () => {
         <div className="admin-content-body">
           <div className="teacher-management-header">
             <h3>Danh sách giáo viên</h3>
-            <button className="add-teacher-btn" onClick={() => setShowAddModal(true)}>
+            <button
+              className="add-teacher-btn"
+              onClick={() => setShowAddModal(true)}
+            >
               <i className="fas fa-plus"></i> Thêm giáo viên
             </button>
           </div>
 
-          {successMessage && <div className="alert success">{successMessage}</div>}
+          {successMessage && (
+            <div className="alert success">{successMessage}</div>
+          )}
 
           {loading ? (
             <div className="loading">Đang tải dữ liệu...</div>
@@ -203,7 +248,11 @@ const TeacherManagement = () => {
           )}
 
           {/* View Teacher Modal */}
-          <FormModal isOpen={showViewModal} title="Thông tin giáo viên" onClose={() => setShowViewModal(false)}>
+          <FormModal
+            isOpen={showViewModal}
+            title="Thông tin giáo viên"
+            onClose={() => setShowViewModal(false)}
+          >
             {currentTeacher && (
               <div className="teacher-details">
                 <div className="teacher-detail-item">
@@ -228,7 +277,9 @@ const TeacherManagement = () => {
                 </div>
                 <div className="teacher-detail-item">
                   <span className="label">Người liên hệ khẩn cấp:</span>
-                  <span className="value">{currentTeacher.emergencyContact}</span>
+                  <span className="value">
+                    {currentTeacher.emergencyContact}
+                  </span>
                 </div>
                 <div className="teacher-detail-item">
                   <span className="label">Ngày vào làm:</span>
@@ -243,7 +294,11 @@ const TeacherManagement = () => {
                   <span className="value">{currentTeacher.subject}</span>
                 </div>
                 <div className="form-actions">
-                  <button type="button" className="btn-cancel" onClick={() => setShowViewModal(false)}>
+                  <button
+                    type="button"
+                    className="btn-cancel"
+                    onClick={() => setShowViewModal(false)}
+                  >
                     Đóng
                   </button>
                 </div>
@@ -252,7 +307,11 @@ const TeacherManagement = () => {
           </FormModal>
 
           {/* Add Teacher Modal */}
-          <FormModal isOpen={showAddModal} title="Thêm Giáo Viên" onClose={() => setShowAddModal(false)}>
+          <FormModal
+            isOpen={showAddModal}
+            title="Thêm Giáo Viên"
+            onClose={() => setShowAddModal(false)}
+          >
             <form onSubmit={handleAddTeacher} className="teacher-form">
               <div className="form-group">
                 <label>Họ và Tên *</label>
@@ -287,9 +346,13 @@ const TeacherManagement = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="Nhập số điện thoại"
                   required
                 />
+                {errors.phone && (
+                  <div className="invalid-feedback">{errors.phone}</div>
+                )}
               </div>
 
               <div className="form-group">
@@ -299,9 +362,13 @@ const TeacherManagement = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="Nhập email"
                   required
                 />
+                {errors.email && (
+                  <div className="invalid-feedback">{errors.email}</div>
+                )}
               </div>
 
               <div className="form-group">
@@ -331,7 +398,13 @@ const TeacherManagement = () => {
               <div className="form-group">
                 <label>Ngày bắt đầu *</label>
                 <div className="date-input-container">
-                  <input type="date" name="joinDate" value={formData.joinDate} onChange={handleInputChange} required />
+                  <input
+                    type="date"
+                    name="joinDate"
+                    value={formData.joinDate}
+                    onChange={handleInputChange}
+                    required
+                  />
                   <i className="fas fa-calendar"></i>
                 </div>
               </div>
@@ -349,7 +422,12 @@ const TeacherManagement = () => {
 
               <div className="form-group">
                 <label>Môn giảng dạy *</label>
-                <select name="subject" value={formData.subject} onChange={handleInputChange} required>
+                <select
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  required
+                >
                   <option value="Toán">Toán</option>
                   <option value="Văn">Văn</option>
                   <option value="Anh">Anh</option>
@@ -360,7 +438,11 @@ const TeacherManagement = () => {
               </div>
 
               <div className="form-actions">
-                <button type="button" className="btn-cancel" onClick={() => setShowAddModal(false)}>
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={() => setShowAddModal(false)}
+                >
                   Hủy
                 </button>
                 <button type="submit" className="btn-submit">
@@ -371,11 +453,21 @@ const TeacherManagement = () => {
           </FormModal>
 
           {/* Edit Teacher Modal */}
-          <FormModal isOpen={showEditModal} title="Sửa Giáo Viên" onClose={() => setShowEditModal(false)}>
+          <FormModal
+            isOpen={showEditModal}
+            title="Sửa Giáo Viên"
+            onClose={() => setShowEditModal(false)}
+          >
             <form onSubmit={handleEditTeacher} className="teacher-form">
               <div className="form-group">
                 <label>Họ và Tên *</label>
-                <input type="text" name="name" value={formData.name} onChange={handleInputChange} required />
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
@@ -394,17 +486,43 @@ const TeacherManagement = () => {
 
               <div className="form-group">
                 <label>Số điện thoại *</label>
-                <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} required />
+                <input
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  required
+                />
+                {errors.phone && (
+                  <div className="invalid-feedback">{errors.phone}</div>
+                )}
               </div>
 
               <div className="form-group">
                 <label>Email *</label>
-                <input type="email" name="email" value={formData.email} onChange={handleInputChange} required />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  required
+                />
+                {errors.email && (
+                  <div className="invalid-feedback">{errors.email}</div>
+                )}
               </div>
 
               <div className="form-group">
                 <label>Địa chỉ *</label>
-                <input type="text" name="address" value={formData.address} onChange={handleInputChange} required />
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
@@ -421,19 +539,35 @@ const TeacherManagement = () => {
               <div className="form-group">
                 <label>Ngày bắt đầu *</label>
                 <div className="date-input-container">
-                  <input type="date" name="joinDate" value={formData.joinDate} onChange={handleInputChange} required />
+                  <input
+                    type="date"
+                    name="joinDate"
+                    value={formData.joinDate}
+                    onChange={handleInputChange}
+                    required
+                  />
                   <i className="fas fa-calendar"></i>
                 </div>
               </div>
 
               <div className="form-group">
                 <label>Bằng cấp</label>
-                <input type="text" name="degree" value={formData.degree} onChange={handleInputChange} />
+                <input
+                  type="text"
+                  name="degree"
+                  value={formData.degree}
+                  onChange={handleInputChange}
+                />
               </div>
 
               <div className="form-group">
                 <label>Môn giảng dạy *</label>
-                <select name="subject" value={formData.subject} onChange={handleInputChange} required>
+                <select
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  required
+                >
                   <option value="Toán">Toán</option>
                   <option value="Văn">Văn</option>
                   <option value="Anh">Anh</option>
@@ -444,7 +578,11 @@ const TeacherManagement = () => {
               </div>
 
               <div className="form-actions">
-                <button type="button" className="btn-cancel" onClick={() => setShowEditModal(false)}>
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={() => setShowEditModal(false)}
+                >
                   Hủy
                 </button>
                 <button type="submit" className="btn-submit">
@@ -465,7 +603,7 @@ const TeacherManagement = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TeacherManagement
+export default TeacherManagement;

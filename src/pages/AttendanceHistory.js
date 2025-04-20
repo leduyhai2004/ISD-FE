@@ -1,47 +1,49 @@
-"use client"
+"use client";
 
 // src/pages/AttendanceHistory.js
-import { useState, useEffect } from "react"
-import Sidebar from "../components/Sidebar"
-import Topbar from "../components/Topbar"
-import "../styles/attendance-history.css"
-import { getHistory } from "../api/mockAttendance"
+import { useState, useEffect } from "react";
+import Sidebar from "../components/Sidebar";
+import Topbar from "../components/Topbar";
+import "../styles/attendance-history.css";
+import { getHistory } from "../api/mockAttendance";
 
 const AttendanceHistory = () => {
-  const [records, setRecords] = useState([])
-  const [search, setSearch] = useState("")
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(true)
+  const [records, setRecords] = useState([]);
+  const [search, setSearch] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadAttendanceHistory()
-  }, [])
+    loadAttendanceHistory();
+  }, []);
 
   const loadAttendanceHistory = () => {
     getHistory()
       .then((data) => {
         // Sort records by date (newest first)
         const sortedRecords = [...data].sort((a, b) => {
-          const dateA = a.date.split("/").reverse().join("")
-          const dateB = b.date.split("/").reverse().join("")
-          return dateB.localeCompare(dateA)
-        })
-        setRecords(sortedRecords)
-        setLoading(false)
+          const dateA = a.date.split("/").reverse().join("");
+          const dateB = b.date.split("/").reverse().join("");
+          return dateB.localeCompare(dateA);
+        });
+        setRecords(sortedRecords);
+        setLoading(false);
       })
       .catch(() => {
-        setError("Error: Không thể lấy dữ liệu điểm danh. Vui lòng thử lại sau.")
-        setLoading(false)
-      })
-  }
+        setError(
+          "Error: Không thể lấy dữ liệu điểm danh. Vui lòng thử lại sau."
+        );
+        setLoading(false);
+      });
+  };
 
   const filtered = records.filter(
     (r) =>
       r.date.includes(search) ||
       r.status.toLowerCase().includes(search.toLowerCase()) ||
       (r.checkIn && r.checkIn.includes(search)) ||
-      (r.checkOut && r.checkOut.includes(search)),
-  )
+      (r.checkOut && r.checkOut.includes(search))
+  );
 
   return (
     <div className="dashboard-container">
@@ -85,7 +87,11 @@ const AttendanceHistory = () => {
                             <td>{record.checkIn || "--"}</td>
                             <td>{record.checkOut || "--"}</td>
                             <td>
-                              <span className={`status-badge ${record.status.toLowerCase().replace(/\s+/g, "-")}`}>
+                              <span
+                                className={`status-badge ${record.status
+                                  .toLowerCase()
+                                  .replace(/\s+/g, "-")}`}
+                              >
                                 {record.status}
                               </span>
                             </td>
@@ -94,7 +100,7 @@ const AttendanceHistory = () => {
                       ) : (
                         <tr>
                           <td colSpan="4" className="no-data">
-                            Không có dữ liệu điểm danh
+                            Không có dữ li��u điểm danh
                           </td>
                         </tr>
                       )}
@@ -107,7 +113,7 @@ const AttendanceHistory = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AttendanceHistory
+export default AttendanceHistory;
