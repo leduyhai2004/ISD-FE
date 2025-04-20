@@ -3,21 +3,35 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "../styles/teacher_login.css"
-import { login } from "../api/auth" // Import the login function
+import { login } from "../api/mockAuth" // Import the login function
 
 const Login = () => {
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    emailOrUsername: "",
+    password: "",
+    rememberMe: false,
+  })
   const navigate = useNavigate()
-  //navigate("/dashboard") // sau khi login
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
+    })
+  }
 
   const handleLogin = (e) => {
     e.preventDefault()
-    const email = e.target.email.value.trim()
-    const password = e.target.password.value.trim()
+    setLoading(true)
+    setError("")
 
     // Use the mock login function from the API
-    login(email, password)
+    login(formData.emailOrUsername, formData.password)
       .then((user) => {
+        setLoading(false)
         // Check user role and navigate to appropriate dashboard
         if (user.role === "admin") {
           navigate("/admin")
@@ -26,6 +40,7 @@ const Login = () => {
         }
       })
       .catch((error) => {
+        setLoading(false)
         setError("Thông tin đăng nhập không chính xác. Vui lòng thử lại.")
       })
   }
@@ -41,8 +56,17 @@ const Login = () => {
 
           <form onSubmit={handleLogin}>
             <div className="form-group">
-              <label htmlFor="email">Địa chỉ Email</label>
-              <input type="email" id="email" name="email" className="form-control" placeholder="Nhập email" required />
+              <label htmlFor="emailOrUsername">Email hoặc Tên đăng nhập</label>
+              <input
+                type="text"
+                id="emailOrUsername"
+                name="emailOrUsername"
+                className="form-control"
+                placeholder="Nhập email hoặc tên đăng nhập"
+                value={formData.emailOrUsername}
+                onChange={handleChange}
+                required
+              />
             </div>
 
             <div className="form-group">
@@ -53,13 +77,15 @@ const Login = () => {
                 name="password"
                 className="form-control"
                 placeholder="Nhập mật khẩu"
+                value={formData.password}
+                onChange={handleChange}
                 required
               />
             </div>
 
             <div className="form-check">
               <label>
-                <input type="checkbox" />
+                <input type="checkbox" name="rememberMe" checked={formData.rememberMe} onChange={handleChange} />
                 Ghi nhớ đăng nhập
               </label>
               <a href="#" onClick={() => alert("Liên hệ Admin")}>
@@ -67,8 +93,8 @@ const Login = () => {
               </a>
             </div>
 
-            <button type="submit" className="btn-primary">
-              Đăng Nhập
+            <button type="submit" className="btn-primary" disabled={loading}>
+              {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
             </button>
           </form>
 

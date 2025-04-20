@@ -5,12 +5,13 @@ import AdminSidebar from "../../components/admin/AdminSidebar"
 import AdminTopbar from "../../components/admin/AdminTopbar"
 import FormModal from "../../components/admin/FormModal"
 import ConfirmModal from "../../components/admin/ConfirmModal"
+import UserAvatar from "../../components/UserAvatar"
 import {
   getAllTeacherAccounts,
   createTeacherAccount,
   resetTeacherPassword,
   deleteTeacherAccount,
-} from "../../api/mockAdminAccount"
+} from "../../api/mockAuth"
 import "../../styles/admin/AccountManagement.css"
 
 const AccountManagement = () => {
@@ -20,6 +21,8 @@ const AccountManagement = () => {
   const [showResetModal, setShowResetModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [currentAccount, setCurrentAccount] = useState(null)
+  const [successMessage, setSuccessMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState("")
   const [formData, setFormData] = useState({
     teacherName: "",
     username: "",
@@ -64,11 +67,21 @@ const AccountManagement = () => {
     })
   }
 
+  const showSuccess = (message) => {
+    setSuccessMessage(message)
+    setTimeout(() => setSuccessMessage(""), 3000)
+  }
+
+  const showError = (message) => {
+    setErrorMessage(message)
+    setTimeout(() => setErrorMessage(""), 3000)
+  }
+
   const handleAddAccount = (e) => {
     e.preventDefault()
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Mật khẩu xác nhận không khớp!")
+      showError("Mật khẩu xác nhận không khớp!")
       return
     }
 
@@ -77,9 +90,10 @@ const AccountManagement = () => {
         setAccounts([...accounts, newAccount])
         setShowAddModal(false)
         resetForm()
+        showSuccess("Tạo tài khoản thành công!")
       })
       .catch((error) => {
-        console.error("Error creating account:", error)
+        showError(error.message)
       })
   }
 
@@ -87,7 +101,7 @@ const AccountManagement = () => {
     e.preventDefault()
 
     if (resetPasswordData.newPassword !== resetPasswordData.confirmPassword) {
-      alert("Mật khẩu xác nhận không khớp!")
+      showError("Mật khẩu xác nhận không khớp!")
       return
     }
 
@@ -95,10 +109,10 @@ const AccountManagement = () => {
       .then(() => {
         setShowResetModal(false)
         resetResetPasswordForm()
-        alert("Đặt lại mật khẩu thành công!")
+        showSuccess("Đặt lại mật khẩu thành công!")
       })
       .catch((error) => {
-        console.error("Error resetting password:", error)
+        showError(error.message)
       })
   }
 
@@ -107,9 +121,10 @@ const AccountManagement = () => {
       .then(() => {
         setAccounts(accounts.filter((account) => account.id !== currentAccount.id))
         setShowDeleteModal(false)
+        showSuccess("Xóa tài khoản thành công!")
       })
       .catch((error) => {
-        console.error("Error deleting account:", error)
+        showError(error.message)
       })
   }
 
@@ -152,6 +167,9 @@ const AccountManagement = () => {
             </button>
           </div>
 
+          {successMessage && <div className="alert success">{successMessage}</div>}
+          {errorMessage && <div className="alert error">{errorMessage}</div>}
+
           {loading ? (
             <div className="loading">Đang tải dữ liệu...</div>
           ) : (
@@ -162,6 +180,7 @@ const AccountManagement = () => {
                     <th>ID</th>
                     <th>Giáo viên</th>
                     <th>Tên đăng nhập</th>
+                    <th>Email</th>
                     <th>Ngày tạo</th>
                     <th>Thao tác</th>
                   </tr>
@@ -171,8 +190,12 @@ const AccountManagement = () => {
                     accounts.map((account) => (
                       <tr key={account.id}>
                         <td>{account.id}</td>
-                        <td>{account.teacherName}</td>
+                        <td className="teacher-name-cell">
+                          <UserAvatar name={account.name} size="sm" />
+                          <span>{account.name}</span>
+                        </td>
                         <td>{account.username}</td>
+                        <td>{account.email}</td>
                         <td>{account.createdDate}</td>
                         <td>
                           <div className="account-actions">
@@ -188,7 +211,7 @@ const AccountManagement = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="5" className="no-data">
+                      <td colSpan="6" className="no-data">
                         Không có tài khoản nào
                       </td>
                     </tr>
@@ -257,7 +280,7 @@ const AccountManagement = () => {
           {/* Reset Password Modal */}
           <FormModal
             isOpen={showResetModal}
-            title={`Đặt lại mật khẩu cho ${currentAccount?.teacherName}`}
+            title={`Đặt lại mật khẩu cho ${currentAccount?.name}`}
             onClose={() => setShowResetModal(false)}
           >
             <form onSubmit={handleResetPassword}>
@@ -296,7 +319,7 @@ const AccountManagement = () => {
           <ConfirmModal
             isOpen={showDeleteModal}
             title="Xác nhận xóa tài khoản"
-            message={`Bạn có chắc chắn muốn xóa tài khoản của ${currentAccount?.teacherName}?`}
+            message={`Bạn có chắc chắn muốn xóa tài khoản của ${currentAccount?.name}?`}
             onConfirm={handleDeleteAccount}
             onCancel={() => setShowDeleteModal(false)}
           />

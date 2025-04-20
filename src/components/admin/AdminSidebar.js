@@ -14,10 +14,13 @@ const AdminSidebar = () => {
 
   useEffect(() => {
     const currentUser = getCurrentUser()
-    if (currentUser) {
+    if (currentUser && currentUser.role === "admin") {
       setUser(currentUser)
+    } else {
+      // Redirect to login if not an admin
+      navigate("/")
     }
-  }, [])
+  }, [navigate])
 
   useEffect(() => {
     const path = location.pathname
@@ -29,6 +32,7 @@ const AdminSidebar = () => {
     else if (path.includes("/admin/notifications")) setActiveMenu("notifications")
     else if (path.includes("/admin/chat")) setActiveMenu("chat")
     else if (path.includes("/admin/contracts")) setActiveMenu("contracts")
+    else if (path.includes("/admin/accounts")) setActiveMenu("accounts")
     else if (path.includes("/admin/settings")) setActiveMenu("settings")
   }, [location.pathname])
 
@@ -43,14 +47,16 @@ const AdminSidebar = () => {
     })
   }
 
+  if (!user) return null
+
   return (
     <div className="admin-sidebar">
       <div className="admin-sidebar-header">
         <div className="admin-avatar-container">
-          <UserAvatar name={user?.name || "Admin"} size="lg" />
+          <UserAvatar name={user.name} size="lg" />
         </div>
-        <p className="admin-name">{user?.name || "Admin"}</p>
-        <p className="admin-role">{user?.position || "Quản trị viên"}</p>
+        <p className="admin-name">{user.name}</p>
+        <p className="admin-role">{user.position}</p>
       </div>
 
       <ul className="admin-menu">
@@ -68,6 +74,14 @@ const AdminSidebar = () => {
           className={`admin-menu-item ${activeMenu === "teachers" ? "active" : ""}`}
         >
           <i className="fas fa-user-tie"></i> Quản lý giáo viên
+        </li>
+
+        {/* Quản lý tài khoản */}
+        <li
+          onClick={() => handleNavigate("/admin/accounts", "accounts")}
+          className={`admin-menu-item ${activeMenu === "accounts" ? "active" : ""}`}
+        >
+          <i className="fas fa-users-cog"></i> Quản lý tài khoản
         </li>
 
         {/* Quản lý nghỉ phép */}

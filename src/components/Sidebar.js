@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import UserAvatar from "./UserAvatar"
+import { getCurrentUser } from "../api/mockAuth"
 import "../styles/Sidebar.css"
 
 const Sidebar = () => {
@@ -11,6 +12,17 @@ const Sidebar = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const [showAttendanceMenu, setShowAttendanceMenu] = useState(false)
   const [activeMenu, setActiveMenu] = useState("")
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    const currentUser = getCurrentUser()
+    if (currentUser && currentUser.role === "teacher") {
+      setUser(currentUser)
+    } else {
+      // Redirect to login if not a teacher
+      navigate("/")
+    }
+  }, [navigate])
 
   // Set active menu based on current path when component mounts or path changes
   useEffect(() => {
@@ -36,14 +48,21 @@ const Sidebar = () => {
     setActiveMenu(menu)
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser")
+    navigate("/")
+  }
+
+  if (!user) return null
+
   return (
     <div className="sidebar">
       <div className="sidebar-header">
         <div className="avatar-container">
-          <UserAvatar name="Nguyễn Văn A" size="lg" />
+          <UserAvatar name={user.name} size="lg" />
         </div>
-        <p className="teacher-name">Nguyễn Văn A</p>
-        <p className="teacher-role">Giáo Viên Toán</p>
+        <p className="teacher-name">{user.name}</p>
+        <p className="teacher-role">{user.position}</p>
       </div>
 
       <ul className="menu">
@@ -140,7 +159,7 @@ const Sidebar = () => {
         </li>
 
         {/* Đăng xuất */}
-        <li onClick={() => handleNavigate("/", "logout")} className="menu-item logout">
+        <li onClick={handleLogout} className="menu-item logout">
           <i className="fas fa-sign-out-alt"></i> Đăng xuất
         </li>
       </ul>
