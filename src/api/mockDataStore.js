@@ -7,6 +7,9 @@ import { EventEmitter } from "events";
 // Create event emitter instance
 export const dataEvents = new EventEmitter();
 
+// Set max listeners to avoid memory leak warnings
+dataEvents.setMaxListeners(20);
+
 // User accounts data store
 export const usersStore = {
   users: [
@@ -21,11 +24,12 @@ export const usersStore = {
       avatar: "/placeholder.svg?height=80&width=80",
       createdDate: "01/01/2025",
       // Additional profile fields
-      birthDate: "01/01/1990",
+      birthDate: "1990-01-01", // Format for date input
       phone: "0123-456-789",
       address: "123 Đường ABC, Quận 1, TP.HCM",
       emergencyContact: "Nguyễn Văn B - Cha - 0987-111-222",
       degree: "Thạc sĩ Toán học",
+      subject: "Toán",
     },
     {
       id: 2,
@@ -86,7 +90,7 @@ export const attendanceStore = {
     {
       id: 1,
       teacherId: 1,
-      teacherName: "Nguyễn Văn Anh",
+      teacherName: "Nguyễn Văn A",
       date: "19/04/2025",
       checkIn: "7:55:12 AM",
       checkOut: "17:00:12 PM",
@@ -94,14 +98,13 @@ export const attendanceStore = {
     },
     {
       id: 2,
-      teacherId: 2,
-      teacherName: "Trần Thị B",
-      date: "19/04/2025",
+      teacherId: 1,
+      teacherName: "Nguyễn Văn A",
+      date: "20/04/2025",
       checkIn: "8:10:12 AM",
       checkOut: "17:05:43 PM",
       status: "Đi muộn",
     },
-
     // ... other attendance records
   ],
 
@@ -176,12 +179,12 @@ export const leaveRequestsStore = {
     },
     {
       id: 2,
-      teacherId: 2,
-      teacherName: "Trần Thị B",
+      teacherId: 1,
+      teacherName: "Nguyễn Văn A",
       type: "Nghỉ ốm",
       days: 1,
-      startDate: "22/04/2025",
-      endDate: "22/04/2025",
+      startDate: "25/04/2025",
+      endDate: "25/04/2025",
       reason: "Bị cảm cúm",
       status: "pending",
       submittedDate: "18/04/2025",
@@ -234,17 +237,6 @@ export const contractsStore = {
       status: "active",
       type: "Hợp đồng 1 năm",
       position: "Giáo viên Toán",
-      salary: "15.000.000 VNĐ",
-    },
-    {
-      id: 2,
-      teacherId: 2,
-      teacherName: "Trần Thị B",
-      startDate: "2023-03-05",
-      endDate: "2024-02-28",
-      status: "active",
-      type: "Hợp đồng 1 năm",
-      position: "Giáo viên Văn",
       salary: "15.000.000 VNĐ",
     },
     // ... other contracts
@@ -415,17 +407,26 @@ export const notificationsStore = {
         id: 1,
         type: "Thông báo chung",
         content: "Thông báo mới về quy định nghỉ phép.",
-        date: "16/3/2025",
+        date: "16/04/2025",
         read: false,
       },
       {
         id: 2,
         type: "Chính sách",
         content: "Thông báo mới về quy định nghỉ phép.",
-        date: "16/3/2025",
+        date: "15/04/2025",
         read: true,
       },
       // ... other user notifications
+    ],
+    2: [
+      {
+        id: 1,
+        type: "Hệ thống",
+        content: "Chào mừng đến với hệ thống quản lý giáo viên.",
+        date: "01/01/2025",
+        read: true,
+      },
     ],
   },
 
@@ -441,7 +442,7 @@ export const notificationsStore = {
         .map((user) => user.id);
       teacherIds.forEach((teacherId) => {
         this.addUserNotification(teacherId, {
-          id: this.getUserNotifications(teacherId).length + 1,
+          id: generateId(this.getUserNotifications(teacherId)),
           type: notification.title,
           content: notification.content,
           date: notification.date,
@@ -452,7 +453,7 @@ export const notificationsStore = {
       // Add to specific users
       notification.recipients.forEach((teacherId) => {
         this.addUserNotification(teacherId, {
-          id: this.getUserNotifications(teacherId).length + 1,
+          id: generateId(this.getUserNotifications(teacherId)),
           type: notification.title,
           content: notification.content,
           date: notification.date,
@@ -499,6 +500,96 @@ export const notificationsStore = {
   // Get notifications for a specific user
   getUserNotifications(userId) {
     return this.userNotifications[userId] || [];
+  },
+
+  // Get unread notifications count for a specific user
+  getUnreadNotificationsCount(userId) {
+    const notifications = this.getUserNotifications(userId);
+    return notifications.filter((notif) => !notif.read).length;
+  },
+};
+
+// Profile update requests store
+export const profileRequestsStore = {
+  requests: [
+    // Sample request for demonstration
+    {
+      id: 1,
+      userId: 1,
+      userName: "Nguyễn Văn A",
+      currentData: {
+        name: "Nguyễn Văn A",
+        email: "teacher@gmail.com",
+        phone: "0123-456-789",
+        birthDate: "1990-01-01",
+        address: "123 Đường ABC, Quận 1, TP.HCM",
+        emergencyContact: "Nguyễn Văn B - Cha - 0987-111-222",
+        degree: "Thạc sĩ Toán học",
+        subject: "Toán",
+      },
+      requestedData: {
+        name: "Nguyễn Văn A",
+        email: "teacher@gmail.com",
+        phone: "0987-654-321",
+        birthDate: "1990-01-01",
+        address: "456 Đường XYZ, Quận 2, TP.HCM",
+        emergencyContact: "Nguyễn Văn B - Cha - 0987-111-222",
+        degree: "Tiến sĩ Toán học",
+        subject: "Toán",
+      },
+      status: "pending",
+      requestDate: "19/04/2025",
+      responseDate: null,
+      responseReason: null,
+    },
+  ],
+
+  // Add a request to the store
+  addRequest(request) {
+    console.log("DataStore: Adding profile request to store:", request);
+
+    // Make sure we have a valid request object
+    if (!request || !request.id || !request.userId) {
+      console.error("DataStore: Invalid request object:", request);
+      throw new Error("Invalid request object");
+    }
+
+    // Add the request to the requests array
+    this.requests.push(request);
+
+    // Emit the event to notify components
+    console.log("DataStore: Emitting profile-requests-updated event");
+    dataEvents.emit("profile-requests-updated", this.requests);
+
+    return request;
+  },
+
+  // Update a request in the store
+  updateRequest(id, requestData) {
+    const index = this.requests.findIndex(
+      (request) => request.id === Number(id)
+    );
+    if (index !== -1) {
+      this.requests[index] = { ...this.requests[index], ...requestData };
+      dataEvents.emit("profile-requests-updated", this.requests);
+      return this.requests[index];
+    }
+    return null;
+  },
+
+  // Get a request by ID
+  getRequestById(id) {
+    return this.requests.find((request) => request.id === Number(id)) || null;
+  },
+
+  // Get requests by user ID
+  getRequestsByUser(userId) {
+    return this.requests.filter((request) => request.userId === Number(userId));
+  },
+
+  // Get requests by status
+  getRequestsByStatus(status) {
+    return this.requests.filter((request) => request.status === status);
   },
 };
 

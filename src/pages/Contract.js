@@ -1,27 +1,66 @@
-"use client"
+"use client";
 
 // src/pages/Contract.js
-import { useState, useEffect } from "react"
-import Sidebar from "../components/Sidebar"
-import Topbar from "../components/Topbar"
-import "../styles/contract.css"
-import { getContract } from "../api/mockContract"
+import { useState, useEffect } from "react";
+import Sidebar from "../components/Sidebar";
+import Topbar from "../components/Topbar";
+import "../styles/contract.css";
+import { getContract, downloadContract } from "../api/mockContract";
 
 const Contract = () => {
-  const [contract, setContract] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [contract, setContract] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
 
   useEffect(() => {
     getContract()
       .then((data) => {
-        setContract(data)
-        setLoading(false)
+        setContract(data);
+        setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching contract:", error)
-        setLoading(false)
+        console.error("Error fetching contract:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleDownload = () => {
+    if (!contract) return;
+
+    setDownloading(true);
+
+    downloadContract(contract.id)
+      .then((response) => {
+        if (!response.success) {
+          throw new Error(response.message || "Download failed");
+        }
+
+        // Create a blob from the response
+        const blob = new Blob([response.data], {
+          type: response.fileName.endsWith(".txt")
+            ? "text/plain"
+            : "application/pdf",
+        });
+
+        // Create a link element to trigger the download
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = response.fileName || `Contract-${contract.id}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+
+        // Clean up
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        setDownloading(false);
       })
-  }, [])
+      .catch((error) => {
+        console.error("Error downloading contract:", error);
+        setDownloading(false);
+        alert("Không thể tải hợp đồng. Vui lòng thử lại sau.");
+      });
+  };
 
   return (
     <div className="dashboard-container">
@@ -62,6 +101,23 @@ const Contract = () => {
                 </div>
 
                 <div className="contract-actions">
+                  <button
+                    className={`download-button ${
+                      downloading ? "downloading" : ""
+                    }`}
+                    onClick={handleDownload}
+                    disabled={downloading}
+                  >
+                    {downloading ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin"></i> Đang tải...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-download"></i> Tải hợp đồng
+                      </>
+                    )}
+                  </button>
                   <button className="view-pdf-button">
                     <i className="fas fa-file-pdf"></i> Xem PDF
                   </button>
@@ -74,7 +130,7 @@ const Contract = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Contract
+export default Contract;

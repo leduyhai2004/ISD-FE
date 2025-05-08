@@ -1,45 +1,53 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
-import { getCurrentUser } from "./api/mockAuth"
-import { DataSyncProvider } from "./components/DataSyncProvider"
-import Login from "./pages/Login"
-import Dashboard from "./pages/Dashboard"
-import ProfileView from "./pages/profile/ProfileView"
-import ProfileEdit from "./pages/profile/ProfileEdit"
-import Notifications from "./pages/Notifications"
-import Messages from "./pages/Messages"
-import Contract from "./pages/Contract"
-import LeaveRequest from "./pages/LeaveRequest"
-import CheckInOut from "./pages/CheckInOut"
-import AttendanceHistory from "./pages/AttendanceHistory"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { getCurrentUser } from "./api/mockAuth";
+import { DataSyncProvider } from "./components/DataSyncProvider";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import ProfileView from "./pages/profile/ProfileView";
+import ProfileEdit from "./pages/profile/ProfileEdit";
+import Notifications from "./pages/Notifications";
+import Messages from "./pages/Messages";
+import Contract from "./pages/Contract";
+import LeaveRequest from "./pages/LeaveRequest";
+import CheckInOut from "./pages/CheckInOut";
+import AttendanceHistory from "./pages/AttendanceHistory";
 
 // Admin routes
-import AdminDashboard from "./pages/admin/AdminDashboard"
-import TeacherManagement from "./pages/admin/TeacherManagement"
-import LeaveManagement from "./pages/admin/LeaveManagement"
-import AttendanceManagement from "./pages/admin/AttendanceManagement"
-import NotificationManagement from "./pages/admin/NotificationManagement"
-import TransferManagement from "./pages/admin/TransferManagement"
-import ChatManagement from "./pages/admin/ChatManagement"
-import AccountManagement from "./pages/admin/AccountManagement"
-import ContractManagement from "./pages/admin/ContractManagement"
-import ReportManagement from "./pages/admin/ReportManagement"
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import TeacherManagement from "./pages/admin/TeacherManagement";
+import LeaveManagement from "./pages/admin/LeaveManagement";
+import AttendanceManagement from "./pages/admin/AttendanceManagement";
+import NotificationManagement from "./pages/admin/NotificationManagement";
+import TransferManagement from "./pages/admin/TransferManagement";
+import ChatManagement from "./pages/admin/ChatManagement";
+import AccountManagement from "./pages/admin/AccountManagement";
+import ContractManagement from "./pages/admin/ContractManagement";
+import ReportManagement from "./pages/admin/ReportManagement";
+import ProfileRequestsManagement from "./pages/admin/ProfileRequestsManagement";
 
 // Protected route component
 const ProtectedRoute = ({ children, requiredRole }) => {
-  const user = getCurrentUser()
+  const user = getCurrentUser();
 
   if (!user) {
     // Not logged in, redirect to login
-    return <Navigate to="/" replace />
+    return <Navigate to="/" replace />;
   }
 
   if (requiredRole && user.role !== requiredRole) {
     // Wrong role, redirect to appropriate dashboard
-    return <Navigate to={user.role === "admin" ? "/admin" : "/dashboard"} replace />
+    return (
+      <Navigate to={user.role === "admin" ? "/admin" : "/dashboard"} replace />
+    );
   }
 
-  return children
-}
+  return children;
+};
 
 function App() {
   return (
@@ -204,10 +212,18 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/profile-requests"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <ProfileRequestsManagement />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </DataSyncProvider>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -1,27 +1,56 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Sidebar from "../../components/Sidebar"
-import Topbar from "../../components/Topbar"
-import { getUserProfile } from "../../api/mockProfile"
-import "../../styles/profile/profile_view.css"
+import { useState, useEffect } from "react";
+import Sidebar from "../../components/Sidebar";
+import Topbar from "../../components/Topbar";
+import { getUserProfile } from "../../api/mockProfile";
+import { dataEvents } from "../../api/mockDataStore";
+import "../../styles/profile/profile_view.css";
 
 const ProfileView = () => {
-  const [profile, setProfile] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState("")
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
+  const loadProfileData = () => {
+    console.log("ProfileView: Loading profile data");
+    setLoading(true);
     getUserProfile()
       .then((data) => {
-        setProfile(data)
-        setLoading(false)
+        console.log("ProfileView: Profile data loaded:", data);
+        setProfile(data);
+        setLoading(false);
       })
       .catch((err) => {
-        setError("Không thể tải thông tin người dùng")
-        setLoading(false)
-      })
-  }, [])
+        console.error("ProfileView: Error loading profile:", err);
+        setError("Không thể tải thông tin người dùng");
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    loadProfileData();
+
+    // Listen for user data updates
+    const handleUserUpdated = () => {
+      console.log(
+        "ProfileView: Detected users-updated event, reloading profile"
+      );
+      loadProfileData();
+    };
+
+    dataEvents.on("users-updated", handleUserUpdated);
+
+    // Set up interval to refresh data every 30 seconds
+    const interval = setInterval(() => {
+      loadProfileData();
+    }, 30000);
+
+    return () => {
+      dataEvents.off("users-updated", handleUserUpdated);
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <div className="dashboard-container">
@@ -48,10 +77,15 @@ const ProfileView = () => {
                 <strong>Điện thoại:</strong> {profile.phone}
               </p>
               <p>
+                <strong>Ngày sinh:</strong>{" "}
+                {profile.birthDate || "Chưa cập nhật"}
+              </p>
+              <p>
                 <strong>Địa chỉ:</strong> {profile.address}
               </p>
               <p>
-                <strong>Người liên hệ khẩn cấp:</strong> {profile.emergencyContact}
+                <strong>Người liên hệ khẩn cấp:</strong>{" "}
+                {profile.emergencyContact}
               </p>
               <p>
                 <strong>Bằng cấp:</strong> {profile.degree || "Chưa cập nhật"}
@@ -60,7 +94,8 @@ const ProfileView = () => {
                 <strong>Môn giảng dạy:</strong> {profile.subject}
               </p>
               <p>
-                <strong>Ngày vào làm:</strong> {profile.joinDate}
+                <strong>Ngày vào làm:</strong>{" "}
+                {profile.joinDate || "Chưa cập nhật"}
               </p>
             </div>
           ) : (
@@ -69,7 +104,7 @@ const ProfileView = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfileView
+export default ProfileView;
